@@ -1,22 +1,52 @@
 from sanic import Sanic
 import jinja2
+from motor.motor_asyncio import AsyncIOMotorClient
+import aioredis
+import aiohttp
 
 import routes
+import helpers
+from oauth import OAuthMixin
 
 
-app = Sanic(name="xenon.bot", load_env="APP_", strict_slashes=False)
-app.blueprint(routes.bp)
-app.static("/static", "./static")
+class App(Sanic, OAuthMixin):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
-# Should be served by nginx before reaching Sanic
-app.static("/dashboard", "./dashboard")
+        self.blueprint(routes.bp)
+
+        # Static Files
+        # Should be served by nginx before reaching Sanic
+        self.static("/static", "./static")
+        self.static("/dashboard", "./dashboard")
+
+        # Templating Engine
+        self.jinja2 = jinja2.Environment(
+            loader=jinja2.FileSystemLoader("./templates"),
+            autoescape=jinja2.select_autoescape(['html', 'xml']),
+            enable_async=True
+        )
+        self.jinja2.globals.update({
+            "app": self,
+            "helpers": helpers
+        })
+
+        self.db = AsyncIOMotorClient()
+        self.redis = None
+
+        self.session = None
+
+        self.register_listener(self.setup_redis, "before_server_start")
+        self.register_listener(self.setup_session, "before_server_start")
+
+    async def setup_redis(self, _, loop):
+        self.redis = await aioredis.create_redis_pool("redis://localhost", loop=loop)
+
+    async def setup_session(self, _, loop):
+        self.session = aiohttp.ClientSession(loop=loop)
 
 
-app.jinja2 = jinja2.Environment(
-    loader=jinja2.FileSystemLoader("./templates"),
-    autoescape=jinja2.select_autoescape(['html', 'xml']),
-    enable_async=True
-)
+app = App(name="xenon.bot", load_env="APP_", strict_slashes=False)
 
 
 if __name__ == "__main__":

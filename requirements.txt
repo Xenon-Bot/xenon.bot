@@ -1,2 +1,5 @@
 sanic
 jinja2
+pyjwt
+msgpack
+aiohttp

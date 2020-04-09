@@ -1,6 +1,6 @@
 from sanic import Blueprint
 
-from . import home
+from . import home, api, templates
 
 
-bp = Blueprint.group(home.bp)
+bp = Blueprint.group(home.bp, api.bp)
