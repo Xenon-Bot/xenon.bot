@@ -36,14 +36,18 @@ class App(Sanic, OAuthMixin):
 
         self.session = None
 
-        self.register_listener(self.setup_redis, "before_server_start")
-        self.register_listener(self.setup_session, "before_server_start")
+        self.register_listener(self.setup, "before_server_start")
+        self.register_listener(self.teardown, "after_server_stop")
 
-    async def setup_redis(self, _, loop):
+    async def setup(self, _, loop):
+        self.session = aiohttp.ClientSession(loop=loop)
         self.redis = await aioredis.create_redis_pool("redis://localhost", loop=loop)
 
-    async def setup_session(self, _, loop):
-        self.session = aiohttp.ClientSession(loop=loop)
+    async def teardown(self, _, loop):
+        await self.session.close()
+        self.redis.close()
+        await self.redis.wait_closed()
+
 
 
 app = App(name="xenon.bot", load_env="APP_", strict_slashes=False)
