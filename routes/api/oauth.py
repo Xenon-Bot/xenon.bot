@@ -29,7 +29,7 @@ async def exchange_token_route(request):
 
 
 @bp.get("/token")
-@requires_token
+@requires_token()
 async def get_token_route(request, user):
     oauth_data = await request.app.get_oauth(user.id)
     if oauth_data is None:
@@ -39,7 +39,7 @@ async def get_token_route(request, user):
 
 
 @bp.delete("/token")
-@requires_token
+@requires_token()
 async def delete_token_route(request, user):
     await request.app.delete_oauth(user.id)
     return response.empty()

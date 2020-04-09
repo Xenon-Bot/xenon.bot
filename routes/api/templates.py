@@ -33,8 +33,8 @@ async def get_templates_route(route):
 
 
 @bp.post("/")
-@requires_token
-async def create_template_route(request):
+@requires_token()
+async def create_template_route(request, user):
     data = request.json
 
     code = data.get("code")
@@ -57,12 +57,12 @@ async def get_template_route(request, template_code):
 
 
 @bp.patch("/<template_id>")
-@requires_token
-async def update_template_route(request, template_id):
+@requires_token()
+async def update_template_route(request, user, template_id):
     pass
 
 
 @bp.delete("/<template_id>")
-@requires_token
-async def delete_template_route(request, template_id):
+@requires_token()
+async def delete_template_route(request, user, template_id):
     pass
