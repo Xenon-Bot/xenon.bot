@@ -30,8 +30,8 @@ async def exchange_token_route(request):
 
 @bp.get("/token")
 @requires_token
-async def get_token_route(request, user_id):
-    oauth_data = await request.app.get_oauth(user_id)
+async def get_token_route(request, user):
+    oauth_data = await request.app.get_oauth(user.id)
     if oauth_data is None:
         raise response.json({"error": "Oauth token expired. The JWT token is still safe to use."}, status=401)
 
@@ -40,6 +40,6 @@ async def get_token_route(request, user_id):
 
 @bp.delete("/token")
 @requires_token
-async def delete_token_route(request, user_id):
-    await request.app.delete_oauth(user_id)
+async def delete_token_route(request, user):
+    await request.app.delete_oauth(user.id)
     return response.empty()
