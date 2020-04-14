@@ -159,7 +159,8 @@ TIERS = [
                 "text": "Synchronize messages and bans"
             }
         ],
-        "button": '<a class="btn btn-outline-secondary my-sm-0" href="/patreon">'
+        "button": '<a class="btn btn-outline-secondary my-sm-0" target="_blank"'
+                  'href="https://www.patreon.com/join/merlinfuchs/checkout?rid=4409325">'
                   '<span class="align-middle">Buy for 5$/m</span></a>'
     },
     {
@@ -191,7 +192,8 @@ TIERS = [
                 "text": "Synchronize messages and bans"
             }
         ],
-        "button": '<a class="btn btn-outline-secondary my-sm-0" href="/patreon">'
+        "button": '<a class="btn btn-outline-secondary my-sm-0" target="_blank"'
+                  'href="https://www.patreon.com/join/merlinfuchs/checkout?rid=4837411">'
                   '<span class="align-middle">Buy for 10$/m</span></a>'
     },
     {
@@ -223,7 +225,8 @@ TIERS = [
                 "text": "Synchronize messages and bans"
             }
         ],
-        "button": '<a class="btn btn-outline-secondary my-sm-0" href="/patreon">'
+        "button": '<a class="btn btn-outline-secondary my-sm-0" target="_blank"'
+                  'href="https://www.patreon.com/join/merlinfuchs/checkout?rid=3820460">'
                   '<span class="align-middle">Buy for 15$/m</span></a>'
     }
 ]
