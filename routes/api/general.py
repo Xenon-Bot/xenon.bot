@@ -7,7 +7,7 @@ bp = Blueprint(name="general")
 
 
 @bp.get("/shards")
-@stay_fast.ratelimit(limit=5, seconds=10)
+@stay_fast.ratelimit(limit=5, seconds=5)
 @stay_fast.cache_response(minutes=1)
 async def shards_route(request):
     shard_count_raw = await request.app.redis.hget("state", "shard_count")
@@ -21,6 +21,11 @@ async def shards_route(request):
     for shard_id, data in shards_raw.items():
         shards[shard_id.decode("utf-8")] = msgpack.unpackb(data)
 
+    for i in range(shard_count):
+        # Fill up offline shards
+        if str(i) not in shards.keys():
+            shards[str(i)] = None
+
     return response.json({
         "shard_count": shard_count,
         "shards": shards
@@ -28,6 +33,7 @@ async def shards_route(request):
 
 
 @bp.get("/stats")
+@stay_fast.ratelimit(limit=5, seconds=5)
 @stay_fast.cache_response(minutes=10)
 async def stats_route(request):
     guild_count = await request.app.redis.hlen("guilds")

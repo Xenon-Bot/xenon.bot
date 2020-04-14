@@ -72,17 +72,17 @@
             <div class="row pt-5">
                 <div class="col-4 stat pl-md-5 pt-5">
                     <i class="material-icons stat-icon text-secondary mb-3">trending_up</i>
-                    <h4 class="stat-number" id="stats-guilds">200k+</h4>
-                    <h5 class="stat-description font-weight-light">Servers</h5>
+                    <h4 class="stat-number" id="stats-guilds">many</h4>
+                    <h5 class="stat-description font-weight-light">Discord Servers</h5>
                 </div>
                 <div class="col-4 stat pt-5">
                     <i class="material-icons stat-icon text-secondary mb-3">save</i>
-                    <h4 class="stat-number" id="stats-backups">500k+</h4>
+                    <h4 class="stat-number" id="stats-backups">many</h4>
                     <h5 class="stat-description font-weight-light">Backups Saved</h5>
                 </div>
                 <div class="col-4 stat pr-md-5 pt-5">
                     <i class="material-icons stat-icon text-secondary mb-3">amp_stories</i>
-                    <h4 class="stat-number" id="stats-templates">200+</h4>
+                    <h4 class="stat-number" id="stats-templates">many</h4>
                     <h5 class="stat-description font-weight-light">Public Templates</h5>
                 </div>
             </div>
@@ -162,4 +162,24 @@
             </div>
         </div>
     </section>
+{% endblock %}
+
+{% block js %}
+    <script>
+        function shortenNumber(number) {
+            if (number > 1000) {
+                number = (Math.floor(number / 100) / 10) + "k";
+            }
+
+            return number + "+";
+        }
+
+        $(() => {
+            $.get("/api/stats").done(resp => {
+                $("#stats-guilds").html(shortenNumber(resp.guild_count));
+                $("#stats-backups").html(shortenNumber(resp.backup_count));
+                $("#stats-templates").html(shortenNumber(resp.template_count));
+            });
+        });
+    </script>
 {% endblock %}

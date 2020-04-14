@@ -7,18 +7,11 @@
 {% block main %}
     <div class="container my-5 py-5">
         <h2 class="display-4">Shard Status</h2>
-        <div class="alert alert-success pr-3" role="alert" style="display: inline-block">
-            <span class="pr-3">All systems operational!</span>
-            <span class="font-italic">Refreshing in <span id="refresh-seconds">30</span> seconds.</span>
+        <div class="alert alert-success pr-3" id="status" role="alert" style="display: inline-block">
+            <span class="pr-3" id="status-text">Loading status ...</span>
+            <span class="font-italic">Refreshing in <span id="status-countdown"></span> seconds.</span>
         </div>
-        <div class="shards text-dark font-weight-bold pb-5">
-            {% for i in range(160) %}
-                <span class="shard text-success text-center m-1" data-toggle="tooltip" data-placement="top"
-                      title="120 ms">
-                    {{ i }}
-                </span>
-            {% endfor %}
-        </div>
+        <div class="shards text-dark font-weight-bold pb-5" id="shards"></div>
         <h2 class="display-4 pt-5 text-right">Metrics</h2>
         <h5 class="text-light-2 text-right pb-1">
             An overview over system relevant numbers
@@ -32,10 +25,65 @@
 
 {% block js %}
     <script>
-        $(() => $('[data-toggle="tooltip"]').tooltip());
+        let countDown = 30;
+
+        function updateShards() {
+            $.get("/api/shards").done(resp => {
+                const shardCount = resp.shard_count;
+                const shards = resp.shards;
+
+                let offlineCount = 0;
+
+                const shardDom = $("#shards");
+                shardDom.html("");
+
+                for (let shard_id in Object.keys(shards)) {
+                    let shard = shards[shard_id];
+                    if (shard === null) {
+                        offlineCount += 1;
+                        shardDom.append(`
+                        <span class="shard text-danger text-center m-1" data-toggle="tooltip" data-placement="top" title="offline">
+                            ${shard_id}
+                        </span>
+                        `)
+                    } else {
+                        shardDom.append(`
+                        <span class="shard text-success text-center m-1" data-toggle="tooltip" data-placement="top" title="${Math.floor(shard.latency * 1000)}ms">
+                            ${shard_id}
+                        </span>
+                        `)
+                    }
+                }
+
+                if (offlineCount === 0) {
+                    $("#status").removeClass("alert-danger alert-warning").addClass("alert-success");
+                    $("#status-text").html("All Systems Operational!");
+                } else if (offlineCount == shardCount) {
+                    $("#status").removeClass("alert-success alert-warning").addClass("alert-danger");
+                    $("#status-text").html("All Systems Big Fucked! RIP");
+                } else {
+                    $("#status").removeClass("alert-success alert-danger").addClass("alert-warning");
+                    $("#status-text").html(`Systems partially offline: ${shardCount - offlineCount}/${shardCount} shards online.`);
+                }
+
+                $('[data-toggle="tooltip"]').tooltip();
+            })
+        }
+
+        function run_cuntDown() {
+            countDown--;
+            if (countDown <= 0) {
+                updateShards();
+                countDown = 30;
+            }
+
+            $("#status-countdown").html(countDown);
+        }
 
         $(() => {
-
+            updateShards();
+            $("#status-countdown").html(countDown);
+            setInterval(run_cuntDown, 1000)
         });
     </script>
 {% endblock %}
