@@ -4,7 +4,8 @@ $theme-colors: (
         "danger": #DB2B39,
         "warning": #ECC30B,
         "light": #F2F7F6,
-        "light-2": #C7CBCA
+        "light-2": #C7CBCA,
+        "dark-2": #212124
 );
 
 $font-size-base: 1.05rem;
@@ -17,6 +18,13 @@ $navbar-dark-color: map_get($theme-colors, "light");
 $nav-link-padding-y: .6rem;
 
 @import "bootstrap/bootstrap";
+
+
+code {
+  background-color: map_get($theme-colors, "dark-2");
+  padding: 0.2em;
+  border-radius: 5px;
+}
 
 
 .footer {

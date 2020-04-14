@@ -46,7 +46,7 @@
                         </div>
                         <div class="col-sm-12 col-md-6 text-right pb-4">
                             <h3 class="example-title display-4 pb-2">{{ example.title }}</h3>
-                            <p class="pl-5">{{ example.text }}</p>
+                            <p class="pl-5">{{ example.text|safe }}</p>
                         </div>
                     </div>
                 {% endif %}
@@ -63,7 +63,7 @@
                             <div class="card-body py-5">
                                 <i class="material-icons feature-icon pb-4">{{ feature.icon }}</i>
                                 <h4 class="font-weight-light pb-2">{{ feature.title }}</h4>
-                                <p>{{ feature.text }}</p>
+                                <p class="feature-text">{{ feature.text }}</p>
                             </div>
                         </div>
                     </div>
@@ -123,7 +123,7 @@
     <section id="tiers" class="bg-light-2">
         <div class="container text-dark">
             <h3 class="display-4 pb-5 text-center">Xenon Tiers</h3>
-            <div class="row">
+            <div class="row pt-3">
                 {% for tier in tiers %}
                     <div class="col-sm-12 col-md-6 col-lg-3 my-2">
                         <div class="card bg-light tier">
@@ -133,16 +133,18 @@
                                     {{ tier.name }}
                                 </h3>
                                 <div class="divider bg-light-2"></div>
-                                {% for feature in tier.features %}
-                                    <div class="p-1">
-                                        {% if feature.value %}
-                                            <i class="material-icons float-left text-success pr-2 pb-5">check_circle</i>
-                                        {% else %}
-                                            <i class="material-icons float-left text-danger pr-2 pb-5">cancel</i>
-                                        {% endif %}
-                                        <p>{{ feature.text }}</p>
-                                    </div>
-                                {% endfor %}
+                                <div class="tier-features">
+                                    {% for feature in tier.features %}
+                                        <div class="px-1">
+                                            {% if feature.value %}
+                                                <i class="material-icons float-left text-success pr-2 pb-1">check_circle</i>
+                                            {% else %}
+                                                <i class="material-icons float-left text-danger pr-2 pb-1">cancel</i>
+                                            {% endif %}
+                                            <p class="m-2">{{ feature.text }}</p>
+                                        </div>
+                                    {% endfor %}
+                                </div>
                                 <div class="divider bg-light-2"></div>
                                 <div class="text-center pt-3">
                                     {{ tier.button }}

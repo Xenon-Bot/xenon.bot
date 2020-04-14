@@ -33,6 +33,10 @@ section, .header {
   .feature-icon {
     font-size: $h1-font-size * 1.2;
   }
+
+  .feature-text {
+    height: 5em;
+  }
 }
 
 .stat {
@@ -64,5 +68,9 @@ section, .header {
     display: block;
     margin-left: auto;
     margin-right: auto;
+  }
+
+  .tier-features {
+    height: 20em;
   }
 }

@@ -7,8 +7,9 @@
 {% block main %}
     <div class="container my-5 py-5">
         <h2 class="display-4">Shard Status</h2>
-        <div class="alert alert-success pr-5" role="alert" style="display: inline-block">
-            All systems operational
+        <div class="alert alert-success pr-3" role="alert" style="display: inline-block">
+            <span class="pr-3">All systems operational!</span>
+            <span class="font-italic">Refreshing in <span id="refresh-seconds">30</span> seconds.</span>
         </div>
         <div class="shards text-dark font-weight-bold pb-5">
             {% for i in range(160) %}
@@ -31,8 +32,10 @@
 
 {% block js %}
     <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
+        $(() => $('[data-toggle="tooltip"]').tooltip());
+
+        $(() => {
+
+        });
     </script>
 {% endblock %}

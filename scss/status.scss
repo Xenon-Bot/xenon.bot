@@ -5,6 +5,6 @@
   display: inline-block;
   width: 3em;
   height: 3em;
-  background-color: #212124;
+  background-color: map_get($theme-colors, "dark-2");
   border-radius: 0.2rem;
 }
