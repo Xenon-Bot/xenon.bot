@@ -1,6 +1,4 @@
 from sanic import response
-import msgpack
-from datetime import datetime, timedelta
 
 import helpers
 
@@ -26,8 +24,11 @@ class OAuthMixin:
             resp.raise_for_status()
             return await helpers.json_or_text(resp)
 
-    def oauth_user(self, *, token):
+    def oauth_get_user(self, *, token):
         return self.oauth_request("GET", "/users/@me", token=token)
+
+    def oauth_get_guilds(self, *, token):
+        return self.oauth_request("GET", "/users/@me/guilds", token=token)
 
     def make_jwt_token(self, user_id, access_token):
         return helpers.encode_jwt(self, {"u": user_id, "t": access_token})

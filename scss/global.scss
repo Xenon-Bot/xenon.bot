@@ -1,0 +1,31 @@
+$theme-colors: (
+        "primary": #0052AA,
+        "secondary": #E5541B,
+        "danger": #DB2B39,
+        "warning": #ECC30B,
+        "light": #F2F7F6,
+        "light-2": #C7CBCA
+);
+
+$font-size-base: 1.05rem;
+$border-radius: .50rem;
+
+$input-btn-padding-y: .4rem;
+$input-btn-padding-x: 1.3rem;
+
+$navbar-dark-color: map_get($theme-colors, "light");
+$nav-link-padding-y: .6rem;
+
+@import "bootstrap/bootstrap";
+
+
+.footer {
+  .footer-waves {
+    fill: map_get($theme-colors, "primary");
+  }
+}
+
+.divider {
+  padding-top: 1px;
+  margin: 1rem;
+}

@@ -9,7 +9,7 @@ bp = Blueprint(name="oauth", url_prefix="/oauth")
 
 
 @bp.post("/token")
-@helpers.requires_body("access_token", "expires_in")
+@helpers.requires_body("access_token")
 async def exchange_token_route(request):
     data = request.json
     access_token = data["access_token"]

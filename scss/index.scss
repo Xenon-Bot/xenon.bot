@@ -1,0 +1,41 @@
+@import "global";
+
+.waves path {
+  fill: map_get($theme-colors, "primary");
+  transform: scaleY(0.7);
+}
+
+.example {
+  .example-img {
+    border-radius: $border-radius;
+    width: 100%;
+  }
+}
+
+.feature {
+  .feature-icon {
+    font-size: $h1-font-size * 1.2;
+  }
+}
+
+.question {
+  .question-btn {
+    width: 100%;
+  }
+}
+
+.footer .footer-waves {
+  background-color: map_get($theme-colors, "light-2");
+}
+
+.tier {
+  overflow: hidden;
+
+  .tier-img {
+    height: 7em;
+    border-radius: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
