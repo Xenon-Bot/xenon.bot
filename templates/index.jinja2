@@ -5,9 +5,9 @@
 {% endblock %}
 
 {% block main %}
-    <section>
-        <div class="bg-primary p-5">
-            <div class="text-center text-light my-5">
+    <div>
+        <div class="bg-primary header">
+            <div class="text-center text-light">
                 <h1 class="display-2 font-weight-normal py-3">Xenon</h1>
                 <h3 class="text-light-2 mb-5">Discord Backups, Templates and More</h3>
 
@@ -19,150 +19,142 @@
                 </a>
             </div>
         </div>
-        <div class="waves">
+        <div class="waves pb-5">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
                 <path fill-opacity="1"
                       d="M0,160L34.3,149.3C68.6,139,137,117,206,128C274.3,139,343,181,411,170.7C480,160,549,96,617,101.3C685.7,107,754,181,823,229.3C891.4,277,960,299,1029,277.3C1097.1,256,1166,192,1234,186.7C1302.9,181,1371,235,1406,261.3L1440,288L1440,0L1405.7,0C1371.4,0,1303,0,1234,0C1165.7,0,1097,0,1029,0C960,0,891,0,823,0C754.3,0,686,0,617,0C548.6,0,480,0,411,0C342.9,0,274,0,206,0C137.1,0,69,0,34,0L0,0Z"></path>
             </svg>
         </div>
-    </section>
-    <section id="examples" class="py-5">
+    </div>
+    <section id="examples">
         <div class="container">
-            {% for i in range(4) %}
+            {% for example in examples %}
                 {% if loop.cycle("n", "r") == "n" %}
                     <div class="row example py-5 mb-3">
                         <div class="col-sm-12 col-md-6 pb-4">
-                            <h3 class="example-title display-4 pb-2">Create Backups</h3>
-                            <p class="pr-5">
-                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-                                squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck
-                                quinoa
-                                nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid
-                                single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft
-                                beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher
-                                vice
-                            </p>
+                            <h3 class="example-title display-4 pb-2">{{ example.title }}</h3>
+                            <p class="pr-5">{{ example.text }}</p>
                         </div>
                         <div class="col-sm-12 col-md-6">
-                            <img class="example-img" src="/static/img/backup_create.jpg" height="" alt="">
+                            <img class="example-img" src="{{ example.img }}" height="" alt="">
                         </div>
                     </div>
                 {% else %}
                     <div class="row example py-5 flex-column-reverse flex-md-row mb-3">
                         <div class="col-sm-12 col-md-6">
-                            <img class="example-img" src="/static/img/backup_create.jpg" height="" alt="">
+                            <img class="example-img" src="{{ example.img }}" height="" alt="">
                         </div>
                         <div class="col-sm-12 col-md-6 text-right pb-4">
-                            <h3 class="example-title display-4 pb-2">Create Backups</h3>
-                            <p class="pl-5">
-                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-                                squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck
-                                quinoa
-                                nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid
-                                single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft
-                                beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher
-                                vice
-                            </p>
+                            <h3 class="example-title display-4 pb-2">{{ example.title }}</h3>
+                            <p class="pl-5">{{ example.text }}</p>
                         </div>
                     </div>
                 {% endif %}
             {% endfor %}
         </div>
     </section>
-    <section id="features" class="bg-primary my-5 py-5">
-        <div class="container my-5 py-5 feature text-center">
+    <section id="features" class="bg-light-2 text-dark">
+        <div class="container feature text-center">
             <h3 class="display-4 pb-5">More Features</h3>
             <div class="row py-5">
-                {% for _ in range(8) %}
+                {% for feature in features %}
                     <div class="col-12 col-sm-6 col-lg-3 my-2">
-                        <div class="card bg-dark">
+                        <div class="card bg-light">
                             <div class="card-body py-5">
-                                <i class="material-icons feature-icon pb-4">save</i>
-                                <h4 class="font-weight-light pb-2">Backups</h4>
-                                <p>Create a backup of you server and load whenever you want</p>
+                                <i class="material-icons feature-icon pb-4">{{ feature.icon }}</i>
+                                <h4 class="font-weight-light pb-2">{{ feature.title }}</h4>
+                                <p>{{ feature.text }}</p>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
+            <div class="row pt-5">
+                <div class="col-4 stat pl-md-5 pt-5">
+                    <i class="material-icons stat-icon text-secondary mb-3">trending_up</i>
+                    <h4 class="stat-number" id="stats-guilds">200k+</h4>
+                    <h5 class="stat-description font-weight-light">Servers</h5>
+                </div>
+                <div class="col-4 stat pt-5">
+                    <i class="material-icons stat-icon text-secondary mb-3">save</i>
+                    <h4 class="stat-number" id="stats-backups">500k+</h4>
+                    <h5 class="stat-description font-weight-light">Backups Saved</h5>
+                </div>
+                <div class="col-4 stat pr-md-5 pt-5">
+                    <i class="material-icons stat-icon text-secondary mb-3">amp_stories</i>
+                    <h4 class="stat-number" id="stats-templates">200+</h4>
+                    <h5 class="stat-description font-weight-light">Public Templates</h5>
+                </div>
+            </div>
         </div>
     </section>
-    <section id="faq my-5 py-5">
-        <div class="container my-5 py-5">
+    <section id="faq">
+        <div class="container">
             <h3 class="display-4 pb-5 text-center">Got Questions?</h3>
-            <div id="accordion">
-                {% for _ in range(5) %}
+            <div id="questionAccordion">
+                {% for question in questions %}
                     <div class="card bg-dark question my-1">
                         <div class="card-header" id="headingOne">
                             <h5 class="mb-0">
                                 <button class="btn text-light question-btn text-left" data-toggle="collapse"
-                                        data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                    How do I invite Xenon?
+                                        data-target="#question{{ loop.index }}" aria-expanded="true"
+                                        aria-controls="#question{{ loop.index }}">
+                                    {{ question.question|safe }}
                                     <i class="material-icons float-right">add</i>
                                 </button>
                             </h5>
                         </div>
 
-                        <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-                             data-parent="#accordion">
-                            <div class="card-body">
-                                Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad
-                                squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck
-                                quinoa
-                                nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid
-                                single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft
-                                beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher
-                                vice
-                                lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you
-                                probably haven't heard of them accusamus labore sustainable VHS.
-                            </div>
+                        <div id="question{{ loop.index }}" class="collapse" aria-labelledby="headingOne"
+                             data-parent="#questionAccordion">
+                            <div class="card-body">{{ question.answer|safe }}</div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         </div>
-        <div class="text-center my-5 pb-5">
+        <div class="text-center mt-5">
             <p class="font-italic">Didn't find what you were looking for? No problem!</p>
-            <a class="btn btn-outline-secondary my-4 my-sm-0" href="/discord">
+            <a class="btn btn-outline-secondary my-4 my-sm-0" href="/discord" target="_blank">
                 <span class="align-middle">Support Discord</span>
             </a>
         </div>
     </section>
-    <section id="tiers" class="bg-light-2 py-5">
-        <div class="container py-5 text-dark">
+    <section id="tiers" class="bg-light-2">
+        <div class="container text-dark">
             <h3 class="display-4 pb-5 text-center">Xenon Tiers</h3>
             <div class="row">
-                {% for i in range(4) %}
+                {% for tier in tiers %}
                     <div class="col-sm-12 col-md-6 col-lg-3 my-2">
                         <div class="card bg-light tier">
                             <div class="card-body py-5">
-                                <img class="tier-img" src="/static/img/xenon.jpg" alt="">
+                                <img class="tier-img" src="{{ tier.img }}" alt="">
                                 <h3 class="card-title text-center pt-3">
-                                    Xenon
+                                    {{ tier.name }}
                                 </h3>
                                 <div class="divider bg-light-2"></div>
-                                <div class="p-1">
-                                    <i class="material-icons float-left text-success pr-2 pb-5">check_circle</i>
-                                    <p>Backing up channels and roles</p>
-                                </div>
-                                <div class="p-1">
-                                    <i class="material-icons float-left text-danger pr-2 pb-5">cancel</i>
-                                    <p>Backing up messages</p>
-                                </div>
+                                {% for feature in tier.features %}
+                                    <div class="p-1">
+                                        {% if feature.value %}
+                                            <i class="material-icons float-left text-success pr-2 pb-5">check_circle</i>
+                                        {% else %}
+                                            <i class="material-icons float-left text-danger pr-2 pb-5">cancel</i>
+                                        {% endif %}
+                                        <p>{{ feature.text }}</p>
+                                    </div>
+                                {% endfor %}
                                 <div class="divider bg-light-2"></div>
                                 <div class="text-center pt-3">
-                                    <a class="btn btn-outline-primary my-sm-0" href="/invite">
-                                        <span class="align-middle">Invite for Free</span>
-                                    </a>
+                                    {{ tier.button }}
                                 </div>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
-            <div class="text-center my-5 pb-5">
-                <p class="font-italic">Not sure which tier fits you needs?</p>
-                <a class="btn btn-outline-primary my-4 my-sm-0" href="/docs">
+            <div class="text-center mt-5">
+                <p class="font-italic">Not sure which tier fits your needs? Look at our Docs!</p>
+                <a class="btn btn-outline-primary my-4 my-sm-0" href="/docs/premium" target="_blank">
                     <span class="align-middle">Docs</span>
                 </a>
             </div>

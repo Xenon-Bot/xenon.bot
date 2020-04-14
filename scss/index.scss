@@ -1,8 +1,25 @@
 @import "global";
 
-.waves path {
-  fill: map_get($theme-colors, "primary");
-  transform: scaleY(0.7);
+
+.waves {
+  position: relative;
+
+  .waves-stats {
+    display: block;
+    position: absolute;
+    z-index: 2;
+  }
+
+  svg {
+    position: absolute;
+    fill: map_get($theme-colors, "primary");
+  }
+}
+
+
+section, .header {
+  padding-top: $spacer * 8;
+  padding-bottom: $spacer * 8;
 }
 
 .example {
@@ -15,6 +32,16 @@
 .feature {
   .feature-icon {
     font-size: $h1-font-size * 1.2;
+  }
+}
+
+.stat {
+  .stat-icon {
+    font-size: $h1-font-size;
+    padding: 0.5em;
+    background-color: map_get($theme-colors, "light");
+    border-radius: 50%;
+    box-shadow: 0 1rem 3rem rgba(map_get($theme-colors, "dark") ,.4);
   }
 }
 
