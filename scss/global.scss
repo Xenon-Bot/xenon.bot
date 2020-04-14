@@ -20,6 +20,16 @@ $nav-link-padding-y: .6rem;
 @import "bootstrap/bootstrap";
 
 
+.cookie-warning {
+  position: fixed;
+  width: 100vw;
+  padding: 0.7em;
+  bottom: 0;
+  background-color: map_get($theme-colors, "primary");
+  font-size: $font-size-base * 1.2;
+}
+
+
 code {
   background-color: map_get($theme-colors, "dark-2");
   padding: 0.2em;

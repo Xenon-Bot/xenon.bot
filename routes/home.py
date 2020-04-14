@@ -247,3 +247,15 @@ async def home_page(request):
 @template("status.jinja2")
 async def status_page(request):
     return {}
+
+
+@bp.route("/legal/privacy")
+@template("privacy.jinja2")
+async def privacy_page(request):
+    return {}
+
+
+@bp.route("/legal/cookies")
+@template("cookies.jinja2")
+async def terms_page(request):
+    return {}

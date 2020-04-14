@@ -52,6 +52,42 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/js/bootstrap-select.min.js"></script>
 
+<div class="cookie-warning" style="display: none;">
+    We are using cookies to ensure you get the best experience on our website.
+    <a href="/legal/cookies" class="text-secondary">Learn More</a>
+    <button class="btn text-light float-right cookie-warning-close" onclick="closeCookieWarning()">
+        <i class="material-icons float-right">cancel</i>
+    </button>
+</div>
+
+<script>
+    function getCookie(name) {
+        let v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+        return v ? v[2] : null;
+    }
+
+    function setCookie(name, value, days) {
+        let d = new Date;
+        d.setTime(d.getTime() + 24 * 60 * 60 * 1000 * days);
+        document.cookie = name + "=" + value + ";path=/;expires=" + d.toGMTString();
+    }
+
+    function deleteCookie(name) {
+        setCookie(name, '', -1);
+    }
+
+    $(() => {
+        if (getCookie("cookies") !== "1") {
+            $(".cookie-warning").css("display", "block");
+        }
+
+        $(".cookie-warning-close").click(() => {
+            $(".cookie-warning").css("display", "none");
+            setCookie("cookies", "1", 7);
+        })
+    });
+</script>
+
 {% block js %}
 {% endblock js %}
 </body>
