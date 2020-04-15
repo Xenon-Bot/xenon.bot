@@ -27,7 +27,7 @@ def requires_body(*fields):
                 return response.json({"error": "JSON body required"}, status=400)
 
             for field in fields:
-                if field not in data.keys():
+                if data.get(field) is None:
                     return response.json({"error": f"Field '{field}' is required"}, status=400)
 
             return await handler(request, *args, **kwargs)
