@@ -2,6 +2,8 @@ from sanic import response
 from enum import Enum
 from datetime import timedelta, datetime
 import dataclasses
+from email.utils import formatdate
+import time
 
 
 class RequestBucket(Enum):
@@ -55,7 +57,14 @@ class cache_response:
             if cached is not None:
                 return cached
 
+            expires_at = datetime.now() + self.td
+            stamp = time.mktime(expires_at.timetuple())
+
             new = await handler(request, *args, **kwargs)
+            new.headers.update({
+                "Cache-Control": self.td.total_seconds(),
+                "Expiration": formatdate(timeval=stamp, localtime=False, usegmt=True)
+            })
             self.set_data(request, new)
             return new
 
