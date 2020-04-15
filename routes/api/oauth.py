@@ -2,26 +2,29 @@ from sanic import Blueprint, response
 import aiohttp
 
 from oauth import requires_token
-import helpers
+from helpers import requires_body
 
 
 bp = Blueprint(name="api.oauth", url_prefix="/oauth")
 
 
 @bp.post("/token")
-@helpers.requires_body("access_token")
+@requires_body("code")
 async def exchange_token_route(request):
     data = request.json
-    access_token = data["access_token"]
+    authorization_code = data["code"]
 
     try:
-        user = await request.app.oauth_user(token=access_token)
+        token_data = await request.app.token_exchange(code=authorization_code)
     except aiohttp.ClientResponseError as e:
-        if e.status == 401:
-            return response.json({"error": "Invalid Token"}, status=400)
+        return response.text(e.message, status=e.status)
 
-        else:
-            return response.json({"error": e.message}, status=e.status)
+    access_token = token_data["access_token"]
+
+    try:
+        user = await request.app.oauth_get_user(token=access_token)
+    except aiohttp.ClientResponseError as e:
+        return response.text(e.message, status=e.status)
 
     jwt_token = request.app.make_jwt_token(user["id"], access_token)
     return response.json({"token": jwt_token})
