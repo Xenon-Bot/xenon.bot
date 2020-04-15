@@ -9,7 +9,7 @@ EXAMPLES = [
         "img": "/static/img/examples/backup_create.jpg",
         "title": "Create Backups",
         "text": "Backups are used to save the current state of your server including roles, channels, "
-                "bans and even more with <a href=\"#tiers\" class=\"text-secondary\">premium</a>. Backups are bind to "
+                "bans and even more with <a href=\"#tiers\" class=\"text-secondary\">Premium</a>. Backups are bind to "
                 "your account and can be loaded on any server where you have administrator permissions.<br/>"
                 "Create a backup with <code>x!backup create</code>."
     },
@@ -18,7 +18,7 @@ EXAMPLES = [
         "title": "Backup Interval",
         "text": "In addition to manual backups, you can enable the backup interval. It will automatically create "
                 "backup in the set interval. Ony the last interval backup of each server is kept unless you have "
-                "<a href=\"#tiers\" class=\"text-secondary\">premium</a>.<br/>"
+                "<a href=\"#tiers\" class=\"text-secondary\">Premium</a>.<br/>"
                 "Enable the backup interval with <code>x!backup interval 24h</code>."
     },
     {
@@ -31,7 +31,7 @@ EXAMPLES = [
     {
         "img": "/static/img/examples/sync_messages.jpg",
         "title": "Transfer Messages",
-        "text": "With <a href=\"#tiers\" class=\"text-secondary\">premium</a> you can transfer messages using full server backups, per channel "
+        "text": "With <a href=\"#tiers\" class=\"text-secondary\">Premium</a> you can transfer messages using full server backups, per channel "
                 "chatlogs or message synchronization. The transferred messages appear with the same content, username "
                 "and avatar as the original ones. Only a small \"bot\" badge identifies them as transferred ones."
     },

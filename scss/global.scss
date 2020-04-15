@@ -27,6 +27,7 @@ $nav-link-padding-y: .6rem;
   bottom: 0;
   background-color: map_get($theme-colors, "primary");
   font-size: $font-size-base * 1.2;
+  box-shadow: 0 -1px 5px map_get($theme-colors, "dark");
 }
 
 
