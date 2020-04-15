@@ -1,5 +1,6 @@
 from sanic import response
 import jwt
+from datetime import datetime, timedelta
 
 import helpers
 
@@ -8,9 +9,13 @@ API_ENDPOINT = "https://discordapp.com/api"
 
 
 class AuthUser:
-    def __init__(self, user_id, access_token=None, admin=False):
+    def __init__(self, user_id, token_data=None, admin=False):
         self.id = user_id
-        self.access_token = access_token
+        if token_data is not None:
+            self.access_token = token_data["a"]
+            self.refresh_token = token_data["r"]
+            self.expires_at = token_data["e"]
+
         self.admin = admin
 
 
@@ -46,10 +51,14 @@ class OAuthMixin:
     def oauth_get_guilds(self, *, token):
         return self.oauth_request("GET", "/users/@me/guilds", token=token)
 
-    def make_jwt_token(self, user_id, access_token=None):
+    def make_jwt_token(self, user_id, token_data=None):
         data = {"u": user_id}
-        if access_token is not None:
-            data["t"] = access_token
+        if token_data is not None:
+            data["t"] = {
+                "a": token_data["access_token"],
+                "e": (datetime.utcnow() + timedelta(seconds=token_data["expires_in"])).timestamp(),
+                "r": token_data["refresh_token"]
+            }
 
         return helpers.encode_jwt(self, data)
 
@@ -57,7 +66,7 @@ class OAuthMixin:
         data = helpers.decode_jwt(self, jwt_token)
         return AuthUser(
             user_id=data["u"],
-            access_token=data.get("t"),
+            token_data=data.get("t"),
             admin=data.get("a", False)
         )
 

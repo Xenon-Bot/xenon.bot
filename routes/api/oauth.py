@@ -19,14 +19,12 @@ async def exchange_token_route(request):
     except aiohttp.ClientResponseError as e:
         return response.text(e.message, status=e.status)
 
-    access_token = token_data["access_token"]
-
     try:
-        user = await request.app.oauth_get_user(token=access_token)
+        user = await request.app.oauth_get_user(token=token_data["access_token"])
     except aiohttp.ClientResponseError as e:
         return response.text(e.message, status=e.status)
 
-    jwt_token = request.app.make_jwt_token(user["id"], access_token)
+    jwt_token = request.app.make_jwt_token(user["id"], token_data)
     return response.json({"token": jwt_token})
 
 
