@@ -3,10 +3,11 @@ from sanic import Blueprint, response
 from oauth import requires_token
 
 
-bp = Blueprint(name="templates", url_prefix="/templates")
+bp = Blueprint("api.templates", url_prefix="/templates")
 
 
 @bp.get("/")
+@requires_token()
 async def get_templates_route(route):
     skip = route.args.pop("skip", 0)
     try:

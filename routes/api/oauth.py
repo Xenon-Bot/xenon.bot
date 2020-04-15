@@ -5,7 +5,7 @@ from oauth import requires_token
 import helpers
 
 
-bp = Blueprint(name="oauth", url_prefix="/oauth")
+bp = Blueprint(name="api.oauth", url_prefix="/oauth")
 
 
 @bp.post("/token")

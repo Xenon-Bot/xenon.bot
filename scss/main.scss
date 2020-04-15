@@ -1,23 +1,4 @@
-$theme-colors: (
-        "primary": #2E71B9,
-        "secondary": #E5541B,
-        "danger": #DB2B39,
-        "warning": #ECC30B,
-        "light": #F2F7F6,
-        "light-2": #d2d9d9,
-        "dark-2": #212124
-);
-
-$font-size-base: 1.05rem;
-$border-radius: .50rem;
-
-$input-btn-padding-y: .4rem;
-$input-btn-padding-x: 1.3rem;
-
-$navbar-dark-color: map_get($theme-colors, "light");
-$nav-link-padding-y: .6rem;
-
-@import "bootstrap/bootstrap";
+@import "variables";
 
 
 .cookie-warning {

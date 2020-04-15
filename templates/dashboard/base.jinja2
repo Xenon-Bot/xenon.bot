@@ -1,0 +1,61 @@
+{% extends "base.jinja2" %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/dashboard.css">
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block main %}
+    <div class="d-flex" id="wrapper">
+        <div class="bg-dark" id="sidebar-wrapper">
+            <div class="sidebar-heading align-middle">
+                <a class="btn p-1 text-light" href="/">
+                    <i class="material-icons pr-1">home</i>
+                </a>
+                Xenon Bot
+            </div>
+            <div class="list-group list-group-flush">
+                <a href="/dashboard/templates"
+                   class="list-group-item list-group-item-action list-group-item-dark bg-dark text-light">Templates</a>
+                <a href="/dashboard/embedg"
+                   class="list-group-item list-group-item-action list-group-item-dark bg-dark text-light">Embed
+                    Generator</a>
+                <a href="/dashboard/invites"
+                   class="list-group-item list-group-item-action list-group-item-dark bg-dark text-light">Custom
+                    Invites</a>
+            </div>
+        </div>
+        <div id="content-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                <button class="btn btn-outline-light p-1" id="sidebar-toggle">
+                    <i class="material-icons align-middle pr-1">menu</i>
+                </button>
+                <div class="container">
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav ml-auto">
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="container-fluid">
+
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block js %}
+    <script src="/static/dashboard.js"></script>
+    <script>
+        $("#sidebar-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+        $("body").removeClass("bg-dark").addClass("bg-dark-2");
+    </script>
+{% endblock %}

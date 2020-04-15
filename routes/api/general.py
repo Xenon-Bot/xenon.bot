@@ -3,7 +3,7 @@ import msgpack
 import stay_fast
 
 
-bp = Blueprint(name="general")
+bp = Blueprint(name="api.general")
 
 
 @bp.get("/shards")

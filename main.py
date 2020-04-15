@@ -18,7 +18,6 @@ class App(Sanic, OAuthMixin):
         # Static Files
         # Should be served by nginx before reaching Sanic
         self.static("/static", "./static")
-        self.static("/dashboard", "./dashboard")
 
         # Templating Engine
         self.jinja2 = jinja2.Environment(
