@@ -22,6 +22,11 @@ section, .header {
   padding-bottom: $spacer * 8;
 }
 
+#examples {
+  padding-top: $spacer * 12;
+  padding-bottom: $spacer * 4;
+}
+
 .example {
   .example-img {
     border-radius: $border-radius;
