@@ -3,12 +3,14 @@ import pymongo.errors
 
 from oauth import requires_token
 from helpers import requires_body
+import stay_fast
 
 
 bp = Blueprint("api.templates", url_prefix="/templates")
 
 
 @bp.get("/")
+@stay_fast.ratelimit(limit=5, seconds=5)
 @requires_token()
 async def get_templates_route(route, user):
     query = route.args
@@ -47,6 +49,7 @@ async def get_templates_route(route, user):
 
 
 @bp.post("/")
+@stay_fast.ratelimit(limit=2, seconds=10)
 @requires_token()
 @requires_body("code", "name", "description", "tags")
 async def create_template_route(request, user):
@@ -81,6 +84,7 @@ async def create_template_route(request, user):
 
 
 @bp.get("/<template_code>")
+@stay_fast.ratelimit(limit=5, seconds=5)
 @requires_token()
 async def get_template_route(request, user, template_code):
     template = await request.app.db.templates.find_one({"_id": template_code})
@@ -92,6 +96,7 @@ async def get_template_route(request, user, template_code):
 
 
 @bp.patch("/<template_id>")
+@stay_fast.ratelimit(limit=2, seconds=10)
 @requires_token()
 async def update_template_route(request, user, template_id):
     data = request.json
@@ -126,6 +131,7 @@ async def update_template_route(request, user, template_id):
 
 
 @bp.delete("/<template_id>")
+@stay_fast.ratelimit(limit=5, seconds=10)
 @requires_token()
 async def delete_template_route(request, user, template_id):
     result = await request.app.templates.delete_one({"_id": template_id, "creator": user.id})
