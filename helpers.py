@@ -3,7 +3,7 @@ import jwt
 import json
 
 
-def template(template_name):
+def template(template_name, status=200):
     def predicate(handler):
         async def wrapper(request, *args, **kwargs):
             context = await handler(request, *args, **kwargs)
@@ -12,7 +12,7 @@ def template(template_name):
 
             template = request.app.jinja2.get_template(template_name)
             rendered = await template.render_async(context)
-            return response.html(rendered)
+            return response.html(rendered, status=status)
 
         return wrapper
 
