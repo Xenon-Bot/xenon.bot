@@ -1,0 +1,22 @@
+{% extends "base.jinja2" %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/error.css">
+{% endblock %}
+
+{% block main %}
+    <div class="container" style="padding-top: 20%; padding-bottom: 20%">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <h1 class="display-1">{% block error_code %}{% endblock %}</h1>
+                <p class="lead">{% block error_text %}{% endblock %}</p>
+                <a class="btn btn-lg btn-outline-light mt-5" href="/">
+                    Take Me Home
+                </a>
+            </div>
+            <div class="col-12 col-md-6">
+                {% block error_img %}{% endblock %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
