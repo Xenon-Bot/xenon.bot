@@ -144,7 +144,7 @@ TIERS = [
             },
             {
                 "value": True,
-                "text": "Keep 2 interval backup per server"
+                "text": "Keep 2 interval backups per server"
             },
             {
                 "value": True,
@@ -177,7 +177,7 @@ TIERS = [
             },
             {
                 "value": True,
-                "text": "Keep 4 interval backup per server"
+                "text": "Keep 4 interval backups per server"
             },
             {
                 "value": True,
@@ -210,7 +210,7 @@ TIERS = [
             },
             {
                 "value": True,
-                "text": "Keep 8 interval backup per server"
+                "text": "Keep 8 interval backups per server"
             },
             {
                 "value": True,
