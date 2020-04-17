@@ -51,6 +51,9 @@ class OAuthMixin:
     def oauth_get_guilds(self, *, token):
         return self.oauth_request("GET", "/users/@me/guilds", token=token)
 
+    def oauth_get_guilds(self, *, token):
+        return self.oauth_request("GET", "/users/@me/guilds", token=token)
+
     def make_jwt_token(self, user_id, token_data=None):
         data = {"u": user_id}
         if token_data is not None:
