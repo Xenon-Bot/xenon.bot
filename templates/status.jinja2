@@ -42,13 +42,13 @@
                     if (shard === null) {
                         offlineCount += 1;
                         shardDom.append(`
-                        <span class="shard text-danger text-center m-1" data-toggle="tooltip" data-placement="top" title="offline">
+                        <span class="shard text-danger text-center m-1 bg-darkest" data-toggle="tooltip" data-placement="top" title="offline">
                             ${shard_id}
                         </span>
                         `)
                     } else {
                         shardDom.append(`
-                        <span class="shard text-success text-center m-1" data-toggle="tooltip" data-placement="top" title="${Math.floor(shard.latency * 1000)}ms">
+                        <span class="shard text-success text-center m-1 bg-darkest" data-toggle="tooltip" data-placement="top" title="${Math.floor(shard.latency * 1000)}ms">
                             ${shard_id}
                         </span>
                         `)
