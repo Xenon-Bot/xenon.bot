@@ -142,13 +142,13 @@
                         tagDom.append(`<option value="${tag}">${tag}</option>`)
                     }
                 });
+
+                loadTemplates();
             });
 
             $("#loadMore").click(() => {
                 loadTemplates();
             });
-
-            loadTemplates();
         });
 
         function showDetails(code) {

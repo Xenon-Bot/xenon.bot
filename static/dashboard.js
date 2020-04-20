@@ -15,6 +15,11 @@ function logout() {
     window.location.reload();
 }
 
+function login() {
+    window.localStorage.setItem("lastPage", window.location.pathname);
+    window.location.href = "/dashboard/login";
+}
+
 function exchangeToken(code) {
     return $.post({
         url: "/api/oauth/token",
@@ -25,7 +30,7 @@ function exchangeToken(code) {
 function apiRequest(method, url, data) {
     const token = getToken();
     if (token === null) {
-        throw "You need to login";
+        login();
     }
 
     return $.ajax({
@@ -59,14 +64,19 @@ $(() => {
         const code = urlParams.get("code");
 
         if (code === null) {
-            window.location.href = "/dashboard/login";
+            return login();
         }
 
         exchangeToken(code).done(resp => {
             setToken(resp.token);
-            dispatchLogin();
+            const lastPage = window.localStorage.getItem("lastPage");
+            if (lastPage !== null && lastPage !== window.location.pathname) {
+                window.location.href = lastPage;
+            } else {
+                dispatchLogin();
+            }
         }).fail((resp) => {
-            window.location.href = "/dashboard/login";
+            return login();
         });
     } else {
         dispatchLogin();
