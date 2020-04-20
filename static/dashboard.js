@@ -6,6 +6,15 @@ function setToken(jwtToken) {
     return window.localStorage.setItem("token", jwtToken);
 }
 
+function deleteToken() {
+    window.localStorage.removeItem("token");
+}
+
+function logout() {
+    deleteToken();
+    window.location.reload();
+}
+
 function exchangeToken(code) {
     return $.post({
         url: "/api/oauth/token",
@@ -23,22 +32,43 @@ function apiRequest(method, url, data) {
         method: method,
         url: url,
         data: data,
-        headers: {Authorization: token}
+        headers: {Authorization: token},
+        statusCode: {
+            401: () => {
+                logout();
+            }
+        }
     });
 }
 
 $(() => {
-    if (getToken() !== null) return;
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get("code");
-
-    if (code === null) {
-        window.location.href = "/dashboard/login";
+    function dispatchLogin() {
+        apiRequest("GET", "/api/oauth/user").done(resp => {
+            const event = new CustomEvent("login", {detail: {user: resp}});
+            window.dispatchEvent(event);
+        })
     }
 
-    exchangeToken(code).done(resp => {
-        setToken(resp.token);
-    }).fail((resp) => {
-        window.location.href = "/dashboard/login";
-    })
+    $(window).on("login", e => {
+        const user = e.detail.user;
+        $(".load-user-name").html(user.username);
+    });
+
+    if (getToken() == null) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get("code");
+
+        if (code === null) {
+            window.location.href = "/dashboard/login";
+        }
+
+        exchangeToken(code).done(resp => {
+            setToken(resp.token);
+            dispatchLogin();
+        }).fail((resp) => {
+            window.location.href = "/dashboard/login";
+        });
+    } else {
+        dispatchLogin();
+    }
 });
