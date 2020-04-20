@@ -9,7 +9,7 @@
 
 {% block main %}
     <div class="d-flex" id="wrapper">
-        <div class="bg-dark" id="sidebar-wrapper">
+        <div class="bg-darker" id="sidebar-wrapper">
             <div class="sidebar-heading align-middle">
                 <a class="btn p-1 text-light" href="/">
                     <i class="material-icons pr-1">home</i>
@@ -18,31 +18,39 @@
             </div>
             <div class="list-group list-group-flush">
                 <a href="/dashboard"
-                   class="list-group-item list-group-item-action list-group-item-dark bg-dark text-light">Home</a>
+                   class="list-group-item list-group-item-action list-group-item-dark bg-darker text-light">Home</a>
                 <a href="/dashboard/templates"
-                   class="list-group-item list-group-item-action list-group-item-dark bg-dark text-light">Templates</a>
+                   class="list-group-item list-group-item-action list-group-item-dark bg-darker text-light">Templates</a>
                 <a href="/dashboard/embedg"
-                   class="list-group-item list-group-item-action list-group-item-dark bg-dark text-light">Embed
+                   class="list-group-item list-group-item-action list-group-item-dark bg-darker text-light">Embed
                     Generator</a>
-                <a href="/dashboard/invites"
-                   class="list-group-item list-group-item-action list-group-item-dark bg-dark text-light">Custom
-                    Invites</a>
             </div>
         </div>
         <div id="content-wrapper">
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <nav class="navbar navbar-expand-lg navbar-dark bg-darker">
                 <button class="btn btn-outline-light p-1" id="sidebar-toggle">
-                    <i class="material-icons align-middle pr-1">menu</i>
+                    <i class="material-icons align-middle px-1">menu</i>
                 </button>
-                <div class="container">
+                <div class="container-fluid">
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav ml-auto">
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <img class="load-user-avatar" src="" alt="">
+                                    <span class="load-user-name"></span>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <button class="dropdown-item" onclick="logout()">Logout</button>
+                                </div>
+                            </li>
                         </ul>
                     </div>
                 </div>
             </nav>
-            <div class="container-fluid">
-
+            <div class="container-fluid p-4">
+                {% block content %}
+                {% endblock %}
             </div>
         </div>
     </div>
@@ -58,6 +66,6 @@
             e.preventDefault();
             $("#wrapper").toggleClass("toggled");
         });
-        $("body").removeClass("bg-dark").addClass("bg-dark-2");
+        $("body").removeClass("bg-dark").addClass("bg-darkest");
     </script>
 {% endblock %}

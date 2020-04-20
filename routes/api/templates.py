@@ -39,8 +39,8 @@ async def get_templates_route(route, user):
     results = []
     async for template in route.app.db.templates.find(
         filter=filter,
-        skip=min(skip, 0),
-        limit=max(min(limit, 0), 50)
+        skip=max(skip, 0),
+        limit=min(max(limit, 0), 50)
     ):
         template["code"] = template.pop("_id")
         results.append(template)
@@ -81,6 +81,13 @@ async def create_template_route(request, user):
         return response.json({"error": "This template was already added"}, status=400)
 
     return response.empty()
+
+
+@bp.get("/tags")
+@stay_fast.ratelimit(limit=5, seconds=5)
+@requires_token()
+async def get_tags_route(request, user):
+    return response.json(["gaming", "school"])
 
 
 @bp.get("/<template_code>")

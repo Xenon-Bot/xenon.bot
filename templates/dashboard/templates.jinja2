@@ -1,1 +1,160 @@
 {% extends "dashboard/base.jinja2" %}
+
+{% block content %}
+    <h1 class="display-4">Templates</h1>
+    <h4 class="text-light-2 pb-4"><span>10</span> public templates available</h4>
+    <div class="form-inline">
+        <input class="form-control mr-2 mb-2 tpl-reload" type="search" placeholder="Search" aria-label="Search"
+               id="search">
+        <select class="form-control mr-2 mb-2 btn btn-outline-secondary tpl-reload" id="tag">
+            <option value="" selected>All</option>
+        </select>
+        <button class="form-control btn btn-outline-success ml-auto mb-2 mr-2" data-toggle="modal"
+                data-target="#addModal">Add One
+        </button>
+        <select class="form-control mr-2 mb-2 btn btn-outline-secondary tpl-reload" id="sort">
+            <option value="votes" selected>Popularity</option>
+            <option value="votes">Votes</option>
+            <option value="name">Name</option>
+        </select>
+    </div>
+    <div class="row mt-3" id="templates">
+    </div>
+    <div class="text-center mt-4">
+        <button class="btn btn-lg btn-outline-light" id="loadMore">Load More</button>
+    </div>
+
+    <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailName"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailName">Template Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addModalLabel">Add Template</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content bg-dark">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Template</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block js %}
+    {{ super() }}
+    <script>
+        $(() => {
+            let skip = 0;
+            const perPage = 12;
+
+            function loadTemplates() {
+                const search = $("#search").val();
+                const tag = $("#tag").val();
+                const sort = $("#sort").val();
+
+                apiRequest("GET", `/api/templates?limit=${perPage}&skip=${skip}&search=${search}&tag=${tag}&sort=${sort}`).done(resp => {
+                    for (let template of resp) {
+                        $("#templates").append(`
+                            <div class="col-12 col-sm-6 col-lg-4 col-xl-3 pb-3" onclick="showDetails('${template.code}')" style="cursor: pointer">
+                                <div class="card bg-dark">
+                                    <div class="card-header">
+                                        <span class="align-middle float-right">
+                                            <span class="align-middle">10</span>
+                                            <i class="material-icons pr-2 text-success align-middle">arrow_upward</i>
+                                        </span>
+                                        <h5 class="card-title mt-2">${template.code}</h5>
+                                        <h6>
+                                            <span class="badge badge-primary p-1 mr-1">gaming</span>
+                                            <span class="badge badge-primary p-1 mr-1">school</span>
+                                            <span class="badge badge-primary p-1 mr-1">roleplay</span>
+                                        </h6>
+                                    </div>
+                                    <div class="card-body overflow-hidden" style="height: 10em">
+                                        ${template.description}
+                                    </div>
+                                </div>
+                            </div>
+                        `);
+                    }
+                });
+
+                skip += perPage;
+            }
+
+            $(".tpl-reload").change(() => {
+                skip = 0;
+                $("#templates").empty();
+                loadTemplates();
+            });
+
+            $(window).on("login", e => {
+                apiRequest("GET", "/api/templates/tags").done(resp => {
+                    const tagDom = $("#tag");
+                    for (let tag of resp) {
+                        tagDom.append(`<option value="${tag}">${tag}</option>`)
+                    }
+                });
+            });
+
+            $("#loadMore").click(() => {
+                loadTemplates();
+            });
+
+            loadTemplates();
+        });
+
+        function showDetails(code) {
+            // fetch template details and create preview
+            $("#detailName").html(code);
+            $("#detailModal").modal('show');
+        }
+    </script>
+{% endblock %}
