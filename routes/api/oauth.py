@@ -29,7 +29,7 @@ async def exchange_token_route(request):
 
 
 @bp.get("/user")
-@requires_token()
+@requires_token(user_only=True)
 async def get_user_route(request, user):
     try:
         data = await request.app.oauth_get_user(token=user.access_token)
@@ -40,7 +40,7 @@ async def get_user_route(request, user):
 
 
 @bp.get("/guilds")
-@requires_token()
+@requires_token(user_only=True)
 async def get_guilds_route(request, user):
     try:
         data = await request.app.oauth_get_guilds(token=user.access_token)
@@ -51,7 +51,7 @@ async def get_guilds_route(request, user):
 
 
 @bp.get("/token")
-@requires_token()
+@requires_token(user_only=True)
 async def get_token_route(request, user):
     return response.json({
         "access_token": user.access_token,

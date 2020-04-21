@@ -11,10 +11,13 @@ API_ENDPOINT = "https://discordapp.com/api"
 class AuthUser:
     def __init__(self, user_id, token_data=None, admin=False):
         self.id = user_id
+        self.access_token = None
+        self.refresh_token = None
+        self.expires_at = None
         if token_data is not None:
             self.access_token = token_data["a"]
             self.refresh_token = token_data["r"]
-            self.expires_at = token_data["e"]
+            self.expires_at = datetime.fromtimestamp(token_data["e"])
 
         self.admin = admin
 
@@ -74,7 +77,7 @@ class OAuthMixin:
         )
 
 
-def requires_token(admin=False):
+def requires_token(admin_only=False, user_only=False):
     def predicate(handler):
         async def wrapper(request, *args, **kwargs):
             jwt_token = request.headers.get("Authorization")
@@ -86,7 +89,14 @@ def requires_token(admin=False):
             except jwt.DecodeError:
                 return response.json({"error": "Invalid token"}, status=401)
 
-            if admin and not user.admin:
+            if user_only and user.access_token is None:
+                return response.json({"error": "This endpoint requires a user token"}, status=401)
+
+            # User tokens expire when they access token expires
+            if user.expires_at is not None and user.expires_at < datetime.utcnow():
+                return response.json({"error": "Token expired"}, status=401)
+
+            if admin_only and not user.admin:
                 return response.json({"error": "Admin privileges required"}, status=401)
 
             return await handler(request, user, *args, **kwargs)
