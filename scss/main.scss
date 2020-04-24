@@ -1,31 +1,8 @@
 @import "variables";
 
 
-.cookie-warning {
-  position: fixed;
-  width: 100vw;
-  padding: 0.7em;
-  bottom: 0;
-  background-color: map_get($theme-colors, "primary");
-  font-size: $font-size-base * 1.2;
-  box-shadow: 0 -1px 5px map_get($theme-colors, "dark");
-}
-
-
-code {
-  background-color: map_get($theme-colors, "darkest");
-  padding: 0.2em;
-  border-radius: 5px;
-}
-
-
 .footer {
   .footer-waves {
     fill: map_get($theme-colors, "primary");
   }
-}
-
-.divider {
-  padding-top: 1px;
-  margin: 1rem;
 }

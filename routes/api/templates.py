@@ -6,6 +6,9 @@ from helpers import requires_body
 import stay_fast
 
 
+VALID_TAGS = ("gaming", "school", "roleplay", "development", "support", "community", "clan")
+
+
 bp = Blueprint("api.templates", url_prefix="/templates")
 
 
@@ -32,16 +35,26 @@ async def get_templates_route(route, user):
     if search is not None:
         filter["$text"] = {"$search": search}
 
-    tags = query.get("tags")
-    if tags is not None:
-        filter["tags"] = tags
+    tag = query.get("tag")
+    if tag is not None:
+        filter["tags"] = tag
+
+    sort = query.get("sort", "views")
+    direction = pymongo.DESCENDING
+    if sort.startswith("-"):
+        sort = sort[1:]
+        direction = pymongo.ASCENDING
 
     results = []
-    async for template in route.app.db.templates.find(
+    async for template in route.app.db.new_templates.find(
         filter=filter,
         skip=max(skip, 0),
-        limit=min(max(limit, 0), 50)
+        limit=min(max(limit, 0), 50),
+        sort=[(sort, direction)]
     ):
+        if template.get("internal"):
+            template.pop("serialized_source_guild", None)
+
         template["code"] = template.pop("_id")
         results.append(template)
 
@@ -49,7 +62,7 @@ async def get_templates_route(route, user):
 
 
 @bp.post("/")
-@stay_fast.ratelimit(limit=2, seconds=10)
+@stay_fast.ratelimit(limit=2, seconds=30)
 @requires_token()
 @requires_body("code", "name", "description", "tags")
 async def create_template_route(request, user):
@@ -69,13 +82,15 @@ async def create_template_route(request, user):
         return response.json({"error": "Template tags should be a list"}, status=400)
 
     try:
-        await request.app.db.templates.insert_one({
+        await request.app.db.new_templates.insert_one({
             "_id": code,
             "creator": user.id,
             "name": name,
             "description": description,
             "tags": tags,
-            "external": True
+            "uses": 0,
+            "upvotes": [],
+            "internal": False
         })
     except pymongo.errors.DuplicateKeyError:
         return response.json({"error": "This template was already added"}, status=400)
@@ -87,19 +102,46 @@ async def create_template_route(request, user):
 @stay_fast.ratelimit(limit=5, seconds=5)
 @requires_token()
 async def get_tags_route(request, user):
-    return response.json(["gaming", "school"])
+    return response.json(list(VALID_TAGS))
 
 
 @bp.get("/<template_code>")
-@stay_fast.ratelimit(limit=5, seconds=5)
+@stay_fast.ratelimit(limit=10, seconds=5)
 @requires_token()
 async def get_template_route(request, user, template_code):
-    template = await request.app.db.templates.find_one({"_id": template_code})
+    template = await request.app.db.new_templates.find_one({"_id": template_code})
     if template is None:
         return response.json({"error": "Unknown template"}, status=404)
 
     template["code"] = template.pop("_id")
+    if template.get("internal"):
+        template.pop("serialized_source_guild", None)
+
     return response.json(template)
+
+
+@bp.get("/<template_code>/data")
+@stay_fast.ratelimit(limit=5, seconds=5)
+@requires_token()
+async def get_template_data_route(request, user, template_code):
+    template = await request.app.db.new_templates.find_one_and_update({"_id": template_code}, {"$inc": {"views": 1}})
+    if template is None or not template.get("internal"):
+        # External templates can be fetched from discord directly
+        return response.redirect(f"https://discordapp.com/api/v6/guilds/templates/{template['_id']}", status=307)
+
+    template["code"] = template.pop("_id")
+    return response.json(template)
+
+
+@bp.post("/<template_id>/upvote")
+@stay_fast.ratelimit(limit=2, seconds=10)
+@requires_token()
+async def upvote_template_route(request, user, template_id):
+    await request.app.db.new_templates.update_one({"_id": template_id}, {
+        "$addToSet": {"upvotes": user.id},
+        "$inc": {"upvote_count": 1}
+    })
+    return response.empty()
 
 
 @bp.patch("/<template_id>")
@@ -130,7 +172,7 @@ async def update_template_route(request, user, template_id):
 
         to_update["tags"] = tags
 
-    result = await request.app.templates.update_one({"_id": template_id, "creator": user.id}, to_update)
+    result = await request.app.db.new_templates.update_one({"_id": template_id, "creator": user.id}, {"$set": to_update})
     if result.matched_count == 0:
         return response.json({"error": "This template does either not exist or you are not the creator"})
 
@@ -141,7 +183,7 @@ async def update_template_route(request, user, template_id):
 @stay_fast.ratelimit(limit=5, seconds=10)
 @requires_token()
 async def delete_template_route(request, user, template_id):
-    result = await request.app.templates.delete_one({"_id": template_id, "creator": user.id})
+    result = await request.app.db.new_templates.delete_one({"_id": template_id, "creator": user.id})
     if result.deleted_count == 0:
         return response.json({"error": "This template does either not exist or you are not the creator"})
 

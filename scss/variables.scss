@@ -18,4 +18,33 @@ $input-btn-padding-x: 1.3rem;
 $navbar-dark-color: map_get($theme-colors, "light");
 $nav-link-padding-y: .6rem;
 
+$input-bg: map_get($theme-colors, "darker");
+$input-border-color: map_get($theme-colors, "darkest");
+$input-color: map_get($theme-colors, "light");
+$input-placeholder-color: map_get($theme-colors, "light-2");
+
+$dropdown-bg: map_get($theme-colors, "darker");
+$dropdown-link-color: map_get($theme-colors, "light");
+
 @import "bootstrap/bootstrap";
+
+.divider {
+  padding-top: 1px;
+  margin: 1rem;
+}
+
+.cookie-warning {
+  position: fixed;
+  width: 100vw;
+  padding: 0.7em;
+  bottom: 0;
+  background-color: map_get($theme-colors, "primary");
+  font-size: $font-size-base * 1.2;
+  box-shadow: 0 -1px 5px map_get($theme-colors, "dark");
+}
+
+code {
+  background-color: map_get($theme-colors, "darkest");
+  padding: 0.2em;
+  border-radius: 5px;
+}

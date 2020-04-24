@@ -3,6 +3,7 @@ import jinja2
 from motor.motor_asyncio import AsyncIOMotorClient
 import aioredis
 import aiohttp
+import pymongo
 
 import routes
 import helpers
@@ -40,6 +41,8 @@ class App(Sanic, OAuthMixin):
 
     async def setup(self, _, loop):
         self.db = AsyncIOMotorClient().xenon
+        await self.db.new_templates.create_index([("_id", pymongo.TEXT), ("description", pymongo.TEXT)])
+
         self.session = aiohttp.ClientSession(loop=loop)
         self.redis = await aioredis.create_redis_pool("redis://localhost", loop=loop)
 

@@ -1,3 +1,12 @@
+function showAlert(text, color) {
+    const alert = $("#alerts").append(`
+        <div class="alert alert-${color} text-wrap" role="alert">
+          ${text}
+        </div>
+    `).children();
+    setTimeout(() => alert.remove(), 3000);
+}
+
 function getToken() {
     return window.localStorage.getItem("token");
 }
@@ -39,11 +48,22 @@ function apiRequest(method, url, data) {
         data: data,
         headers: {Authorization: token},
         statusCode: {
-            401: () => {
-                logout();
-            }
+            401: logout,
+            429: () => showAlert("Woah, slow down! You are sending requests too quickly.", "danger")
         }
     });
+}
+
+function userAvatarUrl(user) {
+    let url = "https://cdn.discordapp.com/";
+
+    if (user.avatar === null) {
+        url += `embed/avatars/${parseInt(user.discriminator) % 5}.png`;
+    } else {
+        url += `avatars/${user.id}/${user.avatar}.png`;
+    }
+
+    return url;
 }
 
 $(() => {

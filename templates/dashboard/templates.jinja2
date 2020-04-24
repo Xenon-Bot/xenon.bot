@@ -1,8 +1,65 @@
 {% extends "dashboard/base.jinja2" %}
 
+{% block css %}
+    {{ super() }}
+    <style>
+        #detailCreatorAvatar {
+            height: 2em;
+            border-radius: 50%;
+        }
+
+        #detailCreator {
+            border-radius: 2.5em;;
+        }
+
+        #detailRoles, #detailChannels {
+            border-radius: 0.5rem;
+            font-size: 0.9em;
+        }
+
+        .previewRole {
+            border-radius: 1em;
+            padding: 2px 9px 2px 9px;
+            margin: 3px;
+            display: inline-block;
+        }
+
+        .previewRoleDot {
+            display: inline-block;
+            height: 1em;
+            width: 1em;
+            padding-right: 3px;
+            border-radius: 50%;
+        }
+
+        .previewCategoryChannel {
+            display: block;
+            text-transform: uppercase;
+            font-weight: bold;
+            padding-bottom: 5px;
+            padding-top: 10px;
+        }
+
+        .previewTextChannel {
+            display: block;
+            padding-left: 15px;
+        }
+
+        .previewTextChannel .hashtag {
+            font-size: 1.4em;
+            padding-right: 5px;
+        }
+
+        .previewVoiceChannel {
+            display: block;
+            padding-left: 15px;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
     <h1 class="display-4">Templates</h1>
-    <h4 class="text-light-2 pb-4"><span>10</span> public templates available</h4>
+    <h4 class="text-light-2 pb-4"><span id="templateCount">Many</span> public templates available</h4>
     <div class="form-inline">
         <input class="form-control mr-2 mb-2 tpl-reload" type="search" placeholder="Search" aria-label="Search"
                id="search">
@@ -13,9 +70,9 @@
                 data-target="#addModal">Add One
         </button>
         <select class="form-control mr-2 mb-2 btn btn-outline-secondary tpl-reload" id="sort">
-            <option value="votes" selected>Popularity</option>
-            <option value="votes">Votes</option>
-            <option value="name">Name</option>
+            <option value="views" selected>Popularity</option>
+            <option value="upvote_count">Votes</option>
+            <option value="-name">Name</option>
         </select>
     </div>
     <div class="row mt-3" id="templates">
@@ -28,17 +85,52 @@
          aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content bg-dark">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="detailName">Template Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-body">
+                    <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                    <h3 class="modal-title" id="detailName">Loading Details ...</h3>
+                    <!-- <span id="detailCreator" class="badge badge-darkest p-1 mt-1">
+                            <img src="https://cdn.discordapp.com/avatars/263750456944230400/d06b517a375eb23187b6df82931a35b8.png"
+                                 alt="avatar" class="mr-1 align-middle" id="detailCreatorAvatar">
+                            <span id="detailCreatorName" class="align-middle">Merlintor</span>
+                            <span id="detailCreatorDiscr" class="text-muted align-middle">#6111</span>
+                        </span>  -->
+                    <div class="divider bg-darkest"></div>
+
+                    <div id="detailDescription"></div>
+                    <h5 id="detailTags" class="mt-1"></h5>
+
+                    <div class="text-right mt-3">
+                        <button class="btn btn-outline-success mr-1" id="detailUpvote">Upvote</button>
+                        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="collapse" data-target="#detailUseCollapse" aria-expanded="false" aria-controls="detailUseCollapse">
+                            Use
+                        </button>
+                    </div>
+
+                    <div class="collapse pt-3" id="detailUseCollapse">
+                        <div class="card card-body bg-darkest">
+                            <span>
+                                <a href="/invite" target="_blank" class="text-secondary">Invite Xenon</a>
+                                to your discord server and run the following command to load this template on an existing server.
+                                <br>
+                                <code>x!template load <span id="detailTemplateCode"></span></code>
+                            </span>
+                            <span id="detailUseNew">
+                                <br>
+                                You can also use <a href="#" target="_blank" class="text-secondary" id="detailUseNewLink">this link</a> to create a new server of this template.
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col-12 col-md-6 px-3">
+                            <div class="bg-darkest p-3 text-light-2" id="detailRoles"></div>
+                        </div>
+                        <div class="col-12 col-md-6 px-3">
+                            <div class="bg-darkest p-3 text-light-2" id="detailChannels"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -48,18 +140,49 @@
          aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content bg-dark">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addModalLabel">Add Template</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <div class="modal-body">
+                    <button type="button" class="close text-light" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <h3 class="modal-title" id="detailName">Add a Template</h3>
+                    <div class="divider bg-darkest"></div>
+
+                    <form class="my-3" id="form">
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="url">Template Link</label>
+                                <input type="text" class="form-control" id="url"
+                                       placeholder="https://discord.new/GNH75Jtr3rJa">
+                                <small class="form-text text-muted">The template url or id from your discord server
+                                    settings</small>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="tags">Tags</label>
+                                <select class="form-control selectpicker" data-style="btn-darker text-light" id="tags"
+                                        multiple>
+                                    <option class="text-light">asd</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="description" rows="3"></textarea>
+                        </div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="guidelines">
+                            <label class="form-check-label" for="guidelines">
+                                I have read and accept the
+                                <a href="/guidelines">template guidelines.</a>
+                            </label>
+                        </div>
+                        <div class="text-right mt-3">
+                            <button type="button" id="submit" class="btn btn-outline-success my-2">Submit</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -91,6 +214,8 @@
 {% block js %}
     {{ super() }}
     <script>
+        let user;
+
         $(() => {
             let skip = 0;
             const perPage = 12;
@@ -102,23 +227,29 @@
 
                 apiRequest("GET", `/api/templates?limit=${perPage}&skip=${skip}&search=${search}&tag=${tag}&sort=${sort}`).done(resp => {
                     for (let template of resp) {
+                        let tags = "";
+                        for (let tag of template.tags) {
+                            tags += `<span class="badge badge-primary p-1 mr-1">${tag}</span>`;
+                        }
+                        if (tags.length === 0) {
+                            tags = `<span class="badge badge-light-2 p-1 mr-1">untagged</span>`;
+                        }
+
                         $("#templates").append(`
-                            <div class="col-12 col-sm-6 col-lg-4 col-xl-3 pb-3" onclick="showDetails('${template.code}')" style="cursor: pointer">
-                                <div class="card bg-dark">
+                            <div class="col-12 col-sm-6 col-lg-4 col-xl-3 pb-3">
+                                <div class="card bg-dark" onclick="showDetails('${template.code}')" style="cursor: pointer">
                                     <div class="card-header">
                                         <span class="align-middle float-right">
-                                            <span class="align-middle">10</span>
+                                            <span class="align-middle">${template.upvote_count}</span>
                                             <i class="material-icons pr-2 text-success align-middle">arrow_upward</i>
                                         </span>
-                                        <h5 class="card-title mt-2">${template.code}</h5>
+                                        <h5 class="card-title mt-2 text-nowrap overflow-hidden">${template.name}</h5>
                                         <h6>
-                                            <span class="badge badge-primary p-1 mr-1">gaming</span>
-                                            <span class="badge badge-primary p-1 mr-1">school</span>
-                                            <span class="badge badge-primary p-1 mr-1">roleplay</span>
+                                            ${tags}
                                         </h6>
                                     </div>
                                     <div class="card-body overflow-hidden" style="height: 10em">
-                                        ${template.description}
+                                        ${template.description ? template.description : 'No Description'}
                                     </div>
                                 </div>
                             </div>
@@ -136,11 +267,16 @@
             });
 
             $(window).on("login", e => {
+                user = e.detail.user;
                 apiRequest("GET", "/api/templates/tags").done(resp => {
                     const tagDom = $("#tag");
                     for (let tag of resp) {
                         tagDom.append(`<option value="${tag}">${tag}</option>`)
                     }
+                });
+
+                apiRequest("GET", "/api/stats").done(resp => {
+                    $("#templateCount").html(resp.template_count);
                 });
 
                 loadTemplates();
@@ -151,9 +287,104 @@
             });
         });
 
+        function upvoteTemplate(code) {
+            apiRequest("POST", `/api/templates/${code}/upvote`).done(() => showDetails(code));
+        }
+
         function showDetails(code) {
-            // fetch template details and create preview
-            $("#detailName").html(code);
+            apiRequest("GET", "/api/templates/" + code).done(resp => {
+                $("#detailName").html(resp.name);
+                $("#detailDescription").html(resp.description);
+
+                if (resp.upvotes.includes(user.id)) {
+                    $("#detailUpvote").addClass("disabled").attr("disabled", true);
+                } else {
+                    $("#detailUpvote").removeClass("disabled")
+                        .attr("disabled", false)
+                        .attr("onclick", `upvoteTemplate('${code}')`);
+                }
+
+                $("#detailTemplateCode").html(code);
+                $("#detailUseNewLink").attr("href", `https://discord.new/${code}`);
+                if (resp.internal) {
+                    $("#detailUseNew").addClass("d-none");
+                } else {
+                    $("#detailUseNew").removeClass("d-none");
+                }
+
+                let tags = "";
+                for (let tag of resp.tags) {
+                    tags += `<span class="badge badge-primary p-1 mr-1">${tag}</span>`;
+                }
+
+                $("#detailTags").html(tags);
+
+                if (resp.internal) {
+                    $("#detailNewServer").addClass("disabled text-muted");
+                } else {
+                    $("#detailNewServer").removeClass("disabled text-muted", false);
+                }
+            });
+
+            apiRequest("GET", "/api/templates/" + code + "/data").done(resp => {
+                const ChannelTypes = {
+                    GUILD_TEXT: 0,
+                    DM: 1,
+                    GUILD_VOICE: 2,
+                    GROUP_DM: 3,
+                    GUILD_CATEGORY: 4,
+                    GUILD_NEWS: 5,
+                    GUILD_STORE: 6
+                };
+
+                const channelDom = $("#detailChannels");
+                channelDom.html("");
+                const channels = resp.serialized_source_guild.channels;
+                for (let channel of channels) {
+                    if (channel.type === ChannelTypes.GUILD_CATEGORY) {
+                        channelDom.append(`
+                            <span class="previewCategoryChannel d-block">
+                                <i class="material-icons align-middle" style="font-size: 1em">expand_more</i>
+                                <span class="align-middle">${channel.name}</span>
+                            </span>
+                        `)
+                    } else if (channel.type === ChannelTypes.GUILD_TEXT) {
+                        channelDom.append(`
+                            <span class="previewTextChannel d-block">
+                                <span class="align-middle hashtag">#</span>
+                                <span class="align-middle name">${channel.name}</span>
+                            </span>
+                        `)
+                    } else if (channel.type === ChannelTypes.GUILD_VOICE) {
+                        channelDom.append(`
+                            <span class="previewVoiceChannel d-block">
+                                <i class="material-icons align-middle" style="font-size: 1.4em">volume_up</i>
+                                <span class="align-middle">${channel.name}</span>
+                            </span>
+                        `)
+                    }
+                }
+
+                const roleDom = $("#detailRoles");
+                roleDom.html("");
+                const roles = resp.serialized_source_guild.roles.slice(1);
+                for (let role of roles.reverse()) {
+                    let color = null;
+                    if (role.color === 0) {
+                        color = "000";
+                    } else {
+                        color = role.color.toString(16);
+                    }
+
+                    roleDom.append(`
+                        <span class="previewRole" style="border: 1px solid #${color}">
+                            <span class="previewRoleDot align-middle" style="background-color: #${color}"></span>
+                            <span class="align-middle">${role.name}</span>
+                        </span>
+                    `);
+                }
+            });
+
             $("#detailModal").modal('show');
         }
     </script>
