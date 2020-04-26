@@ -1,5 +1,6 @@
 from sanic import Blueprint, response
 import pymongo.errors
+from datetime import datetime
 
 from oauth import requires_token
 from helpers import requires_body
@@ -81,15 +82,20 @@ async def create_template_route(request, user):
     if not isinstance(tags, list):
         return response.json({"error": "Template tags should be a list"}, status=400)
 
+    timestamp = datetime.utcnow()
     try:
         await request.app.db.new_templates.insert_one({
             "_id": code,
-            "creator": user.id,
+            "creator_id": user.id,
             "name": name,
             "description": description,
             "tags": tags,
-            "uses": 0,
+            "views": 0,
+            "usage_count": 0,
             "upvotes": [],
+            "upvote_count": 0,
+            "created_at": timestamp,
+            "updated_at": timestamp,
             "internal": False
         })
     except pymongo.errors.DuplicateKeyError:
@@ -127,7 +133,7 @@ async def get_template_data_route(request, user, template_code):
     template = await request.app.db.new_templates.find_one_and_update({"_id": template_code}, {"$inc": {"views": 1}})
     if template is None or not template.get("internal"):
         # External templates can be fetched from discord directly
-        return response.redirect(f"https://discordapp.com/api/v6/guilds/templates/{template['_id']}", status=307)
+        return response.redirect(f"https://discordapp.com/api/v6/guilds/templates/{template_code}", status=307)
 
     template["code"] = template.pop("_id")
     return response.json(template)

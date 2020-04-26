@@ -45,11 +45,12 @@ function apiRequest(method, url, data) {
     return $.ajax({
         method: method,
         url: url,
-        data: data,
+        data: JSON.stringify(data),
         headers: {Authorization: token},
         statusCode: {
             401: logout,
-            429: () => showAlert("Woah, slow down! You are sending requests too quickly.", "danger")
+            429: () => showAlert("Woah, slow down! You are sending requests too quickly.", "danger"),
+            400: resp => showAlert("Error: " + resp.responseJSON.error, "danger")
         }
     });
 }
