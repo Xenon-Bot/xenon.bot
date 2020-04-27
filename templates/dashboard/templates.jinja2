@@ -355,73 +355,78 @@
 
                 $("#detailTags").html(tags);
 
+                let dataUrl;
                 if (resp.internal) {
+                    dataUrl = "/api/templates/" + code + "/data";
                     $("#detailNewServer").addClass("disabled text-muted");
                 } else {
+                    dataUrl = "https://discordapp.com/api/v6/guilds/templates/" + code;
                     $("#detailNewServer").removeClass("disabled text-muted", false);
                 }
-            });
 
-            apiRequest("GET", "/api/templates/" + code + "/data").done(resp => {
-                const ChannelTypes = {
-                    GUILD_TEXT: 0,
-                    DM: 1,
-                    GUILD_VOICE: 2,
-                    GROUP_DM: 3,
-                    GUILD_CATEGORY: 4,
-                    GUILD_NEWS: 5,
-                    GUILD_STORE: 6
-                };
+                $("#detailModal").modal('show');
 
                 const channelDom = $("#detailChannels");
                 channelDom.html("");
-                const channels = resp.serialized_source_guild.channels;
-                for (let channel of channels) {
-                    if (channel.type === ChannelTypes.GUILD_CATEGORY) {
-                        channelDom.append(`
+
+                const roleDom = $("#detailRoles");
+                roleDom.html("");
+
+                apiRequest("GET", dataUrl).done(resp => {
+                    const ChannelTypes = {
+                        GUILD_TEXT: 0,
+                        DM: 1,
+                        GUILD_VOICE: 2,
+                        GROUP_DM: 3,
+                        GUILD_CATEGORY: 4,
+                        GUILD_NEWS: 5,
+                        GUILD_STORE: 6
+                    };
+
+                    const channels = resp.serialized_source_guild.channels;
+                    for (let channel of channels) {
+                        if (channel.type === ChannelTypes.GUILD_CATEGORY) {
+                            channelDom.append(`
                             <span class="previewCategoryChannel d-block">
                                 <i class="material-icons align-middle" style="font-size: 1em">expand_more</i>
                                 <span class="align-middle">${channel.name}</span>
                             </span>
                         `)
-                    } else if (channel.type === ChannelTypes.GUILD_TEXT) {
-                        channelDom.append(`
+                        } else if (channel.type === ChannelTypes.GUILD_TEXT) {
+                            channelDom.append(`
                             <span class="previewTextChannel d-block">
                                 <span class="align-middle hashtag">#</span>
                                 <span class="align-middle name">${channel.name}</span>
                             </span>
                         `)
-                    } else if (channel.type === ChannelTypes.GUILD_VOICE) {
-                        channelDom.append(`
+                        } else if (channel.type === ChannelTypes.GUILD_VOICE) {
+                            channelDom.append(`
                             <span class="previewVoiceChannel d-block">
                                 <i class="material-icons align-middle" style="font-size: 1.4em">volume_up</i>
                                 <span class="align-middle">${channel.name}</span>
                             </span>
                         `)
-                    }
-                }
-
-                const roleDom = $("#detailRoles");
-                roleDom.html("");
-                const roles = resp.serialized_source_guild.roles.slice(1);
-                for (let role of roles.reverse()) {
-                    let color = null;
-                    if (role.color === 0) {
-                        color = "000";
-                    } else {
-                        color = role.color.toString(16);
+                        }
                     }
 
-                    roleDom.append(`
+                    const roles = resp.serialized_source_guild.roles.slice(1);
+                    for (let role of roles.reverse()) {
+                        let color = null;
+                        if (role.color === 0) {
+                            color = "000";
+                        } else {
+                            color = role.color.toString(16);
+                        }
+
+                        roleDom.append(`
                         <span class="previewRole" style="border: 1px solid #${color}">
                             <span class="previewRoleDot align-middle" style="background-color: #${color}"></span>
                             <span class="align-middle">${role.name}</span>
                         </span>
                     `);
-                }
+                    }
+                });
             });
-
-            $("#detailModal").modal('show');
         }
     </script>
 {% endblock %}
