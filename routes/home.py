@@ -1,4 +1,4 @@
-from sanic import Blueprint
+from sanic import Blueprint, response
 
 from helpers import template
 
@@ -259,3 +259,10 @@ async def privacy_page(request):
 @template("cookies.jinja2")
 async def terms_page(request):
     return {}
+
+
+@bp.route("/ads.txt")
+async def ads_txt(request):
+    return response.text(
+        "google.com, pub-6803521419893828, DIRECT, f08c47fec0942fa0"
+    )
