@@ -4,7 +4,7 @@ bp = Blueprint("links")
 
 INVITE_LINK = "https://discordapp.com/oauth2/authorize?client_id=416358583220043796&scope=bot&permissions=8"
 DISCORD_LINK = "https://discord.gg/5GmAsPs"
-DOCS_LINK = "https://docs.xenon.bot"
+DOCS_LINK = "https://wiki.xenon.bot"
 PATREON_LINK = "https://www.patreon.com/merlinfuchs"
 GITHUB_LINK = "https://github.com/Xenon-Bot"
 
