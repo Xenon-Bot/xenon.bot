@@ -42,3 +42,12 @@ async def patreon_link(request):
 @bp.route("/github")
 async def github_link(request):
     return response.redirect(GITHUB_LINK, status=307)
+
+
+@bp.route("/iv/<backup_id>")
+async def backup_invite(request, backup_id):
+    backup = await request.app.db.backups.find_one({"_id": backup_id, "const_invite": True}, projection=("invite",))
+    if backup is None or backup.get("invite") is None:
+        return response.text("Unknown invite. Maybe the creator disabled it.", status=404)
+
+    return response.redirect(f"https://discord.gg/{backup['invite']}")
