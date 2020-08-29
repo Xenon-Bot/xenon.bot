@@ -1,6 +1,6 @@
 from sanic import Blueprint
 
-from . import templates, oauth, general
+from . import templates, oauth, general, backups
 
 
-bp = Blueprint.group(general.bp, oauth.bp, templates.bp, url_prefix="/api")
+bp = Blueprint.group(general.bp, backups.bp, url_prefix="/api")
