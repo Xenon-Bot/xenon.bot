@@ -167,8 +167,10 @@
 {% block js %}
     <script>
         function shortenNumber(number) {
-            if (number > 1000) {
-                number = (Math.floor(number / 100) / 10) + "k";
+            if (number > 1000000) {
+                number = (Math.floor(number / 10000) / 100) + "M"
+            } else if (number > 1000) {
+                number = (Math.floor(number / 100) / 10) + "K";
             }
 
             return number + "+";
