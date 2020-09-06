@@ -7,6 +7,8 @@ DISCORD_LINK = "https://discord.gg/5GmAsPs"
 DOCS_LINK = "https://wiki.xenon.bot"
 PATREON_LINK = "https://www.patreon.com/merlinfuchs"
 GITHUB_LINK = "https://github.com/Xenon-Bot"
+TWITTER_LINK = "https://twitter.com/xenon_bot"
+IG_LINK = "https://www.instagram.com/xenon.bot/"
 
 
 @bp.route("/invite")
@@ -42,6 +44,16 @@ async def patreon_link(request):
 @bp.route("/github")
 async def github_link(request):
     return response.redirect(GITHUB_LINK, status=307)
+
+
+@bp.route("/twitter")
+async def github_link(request):
+    return response.redirect(TWITTER_LINK, status=307)
+
+
+@bp.route("/instagram")
+async def github_link(request):
+    return response.redirect(IG_LINK, status=307)
 
 
 @bp.route("/iv/<backup_id>")
