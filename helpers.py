@@ -3,6 +3,15 @@ import jwt
 import json
 
 
+__all__ = (
+    "template",
+    "requires_body",
+    "encode_jwt",
+    "decode_jwt",
+    "json_or_text"
+)
+
+
 def template(template_name, status=200):
     def predicate(handler):
         async def wrapper(request, *args, **kwargs):

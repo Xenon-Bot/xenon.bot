@@ -46,7 +46,7 @@ async def stats_route(request):
         shard_count = msgpack.unpackb(shard_count_raw)
 
     backup_count = await request.app.db.backups.estimated_document_count()
-    template_count = await request.app.db.templates.estimated_document_count()
+    template_count = await request.app.mongo.dtpl.templates.estimated_document_count()
 
     return response.json({
         "guild_count": guild_count,

@@ -7,10 +7,9 @@ import pymongo
 
 import routes
 import helpers
-from oauth import OAuthMixin
 
 
-class App(Sanic, OAuthMixin):
+class App(Sanic):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -31,6 +30,7 @@ class App(Sanic, OAuthMixin):
             "helpers": helpers
         })
 
+        self.mongo = None
         self.db = None
         self.redis = None
 
@@ -40,7 +40,8 @@ class App(Sanic, OAuthMixin):
         self.register_listener(self.teardown, "after_server_stop")
 
     async def setup(self, _, loop):
-        self.db = AsyncIOMotorClient().xenon
+        self.mongo = AsyncIOMotorClient()
+        self.db = self.mongo.xenon
         await self.db.new_templates.create_index([("_id", pymongo.TEXT), ("description", pymongo.TEXT)])
 
         self.session = aiohttp.ClientSession(loop=loop)

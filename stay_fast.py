@@ -6,6 +6,13 @@ from email.utils import formatdate
 import time
 
 
+__all__ = (
+    "RequestBucket",
+    "cache_response",
+    "ratelimit"
+)
+
+
 class RequestBucket(Enum):
     GLOBAL = 0
     IP = 1
@@ -19,20 +26,28 @@ class CachedData:
 
 
 class cache_response:
-    def __init__(self, level=RequestBucket.GLOBAL, **td_options):
+    def __init__(self, level=RequestBucket.GLOBAL, respect_query=False, **td_options):
         self.level = level
         self.td = timedelta(**td_options)
         self.cache = {}
+        self.respect_query = respect_query
 
     def get_cache_key(self, request):
+        key = ""
+
         if self.level == RequestBucket.GLOBAL:
-            return "global"
+            key = f"{key}global"
 
         elif self.level == RequestBucket.IP:
-            return request.remote_addr or request.ip
+            key = f"{key}{request.remote_addr or request.ip}"
 
         elif self.level == RequestBucket.TOKEN:
-            return request.headers.get("Authorization")
+            key = f"{key}{request.headers.get('Authorization')}"
+
+        if self.respect_query:
+            key = f"{key}{''.join([f'{k}{v}' for k, v in request.args.items()])}"
+
+        return key
 
     def set_data(self, request, data):
         key = self.get_cache_key(request)
