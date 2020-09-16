@@ -37,8 +37,7 @@ async def get_ids(request, _):
 
 @bp.websocket("/loaders/ws")
 @requires_bot_token()
-@ratelimit(limit=30, seconds=10, level=RequestBucket.TOKEN)
-@cache_response(minutes=1)
+@ratelimit(limit=1, seconds=1, level=RequestBucket.TOKEN)
 async def ws_loaders(request, _, ws):
     mpsc = aioredis.pubsub.Receiver(loop=request.app.loop)
     await request.app.redis.psubscribe(mpsc.pattern("loaders:*"))
