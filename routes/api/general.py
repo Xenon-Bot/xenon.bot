@@ -16,15 +16,13 @@ async def shards_route(request):
     if shard_count_raw is not None:
         shard_count = msgpack.unpackb(shard_count_raw)
 
-    shards_raw = await request.app.redis.hgetall("shards")
     shards = {}
-    for shard_id, data in shards_raw.items():
-        shards[shard_id.decode("utf-8")] = msgpack.unpackb(data)
-
-    for i in range(shard_count):
-        # Fill up offline shards
-        if str(i) not in shards.keys():
-            shards[str(i)] = None
+    if shard_count is not None:
+        shards_raw = await request.app.redis.mget(*[f"shards:{i}" for i in range(shard_count)])
+        shards = {
+            str(i): msgpack.unpackb(data) if data is not None else None
+            for i, data in enumerate(shards_raw)
+        }
 
     return response.json({
         "shard_count": shard_count,
