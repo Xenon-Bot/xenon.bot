@@ -1,4 +1,7 @@
 from sanic import Blueprint, response
+import aioredis
+import msgpack
+import json
 
 from stay_fast import *
 from auth import *
@@ -11,7 +14,7 @@ bp = Blueprint(name="api.backups", url_prefix="/backups")
 @requires_bot_token()
 @ratelimit(limit=30, seconds=10, level=RequestBucket.TOKEN)
 @cache_response(respect_query=True, minutes=1)
-async def get_ids(request, bot_id):
+async def get_ids(request, _):
     query = request.args
     source_id = query.get("source")
     target_id = query.get("target")
@@ -30,3 +33,19 @@ async def get_ids(request, bot_id):
 
     else:
         return response.json({"error": "No id translator found"}, status=404)
+
+
+@bp.websocket("/loaders/ws")
+@requires_bot_token()
+@ratelimit(limit=30, seconds=10, level=RequestBucket.TOKEN)
+@cache_response(minutes=1)
+async def ws_loaders(request, _, ws):
+    mpsc = aioredis.pubsub.Receiver(loop=request.app.loop)
+    await request.app.redis.psubscribe(mpsc.pattern("loaders:*"))
+    async for _, msg in mpsc.iter():
+        event = msg[0].decode("utf-8")[len("loaders:"):]
+        data = msgpack.unpackb(msg[1])
+        await ws.send(json.dumps({
+            "event": event,
+            "data": data
+        }))
