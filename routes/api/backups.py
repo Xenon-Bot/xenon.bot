@@ -1,6 +1,4 @@
 from sanic import Blueprint, response
-import msgpack
-import json
 
 from stay_fast import *
 from auth import *
@@ -32,16 +30,3 @@ async def get_ids(request, _):
 
     else:
         return response.json({"error": "No id translator found"}, status=404)
-
-
-@bp.websocket("/loaders/ws")
-@requires_bot_token()
-@ratelimit(limit=1, seconds=1, level=RequestBucket.TOKEN)
-async def ws_loaders(request, _, ws):
-    async for _, msg in request.app.subscriber.psubscribe("loaders:*"):
-        event = msg[0].decode("utf-8")[len("loaders:"):]
-        data = msgpack.unpackb(msg[1])
-        await ws.send(json.dumps({
-            "event": event,
-            "data": data
-        }))

@@ -1,14 +1,17 @@
 from sanic import Blueprint, response
 import msgpack
-import stay_fast
+import json
+
+from stay_fast import *
+from auth import *
 
 
 bp = Blueprint(name="api.general")
 
 
 @bp.get("/shards")
-@stay_fast.ratelimit(limit=5, seconds=5)
-@stay_fast.cache_response(minutes=1)
+@ratelimit(limit=5, seconds=5)
+@cache_response(minutes=1)
 async def shards_route(request):
     shard_count_raw = await request.app.redis.hget("state", "shard_count")
 
@@ -31,8 +34,8 @@ async def shards_route(request):
 
 
 @bp.get("/stats")
-@stay_fast.ratelimit(limit=5, seconds=5)
-@stay_fast.cache_response(minutes=10)
+@ratelimit(limit=5, seconds=5)
+@cache_response(minutes=10)
 async def stats_route(request):
     guild_count = await request.app.redis.hlen("guilds")
     role_count = await request.app.redis.hlen("roles")
@@ -54,3 +57,16 @@ async def stats_route(request):
         "backup_count": backup_count,
         "template_count": template_count
     })
+
+
+@bp.websocket("/loaders/ws")
+@requires_bot_token()
+@ratelimit(limit=1, seconds=1, level=RequestBucket.TOKEN)
+async def ws_loaders(request, _, ws):
+    async for _, msg in request.app.subscriber.psubscribe("loaders:*"):
+        event = msg[0].decode("utf-8")[len("loaders:"):]
+        data = msgpack.unpackb(msg[1])
+        await ws.send(json.dumps({
+            "event": event,
+            "data": data
+        }))
