@@ -4,9 +4,47 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import aioredis
 import aiohttp
 import pymongo
+import weakref
+import asyncio
 
 import routes
 import helpers
+
+
+class RedisSubscriber:
+    def __init__(self, redis, loop):
+        self.redis = redis
+        self.mpsc = aioredis.pubsub.Receiver()
+        self.loop = loop
+        self.loop.create_task(self.reader())
+
+        self.subscribers = weakref.WeakSet()
+
+    async def reader(self):
+        async for channel, msg in self.mpsc.iter():
+            for fut in self.subscribers:
+                if not fut.done():
+                    fut.set_result((channel, msg))
+
+            self.subscribers.clear()
+
+    async def subscribe(self, *channels):
+        await self.redis.subscribe(*[self.mpsc.channel(c) for c in channels])
+        while self.mpsc.is_active:
+            fut = asyncio.Future()
+            self.subscribers.add(fut)
+            channel, msg = await fut
+            if channel.name.decode("utf-8") in channels:
+                yield channel, msg
+
+    async def psubscribe(self, *channels):
+        await self.redis.psubscribe(*[self.mpsc.pattern(c) for c in channels])
+        while self.mpsc.is_active:
+            fut = asyncio.Future()
+            self.subscribers.add(fut)
+            channel, msg = await fut
+            if channel.name.decode("utf-8") in channels:
+                yield channel, msg
 
 
 class App(Sanic):
@@ -33,6 +71,7 @@ class App(Sanic):
         self.mongo = None
         self.db = None
         self.redis = None
+        self.subscriber = None
 
         self.session = None
 
@@ -46,6 +85,7 @@ class App(Sanic):
 
         self.session = aiohttp.ClientSession(loop=loop)
         self.redis = await aioredis.create_redis_pool("redis://localhost", loop=loop)
+        self.subscriber = RedisSubscriber(self.redis, loop=loop)
 
     async def teardown(self, _, loop):
         await self.session.close()

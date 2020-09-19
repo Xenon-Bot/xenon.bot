@@ -1,5 +1,4 @@
 from sanic import Blueprint, response
-import aioredis
 import msgpack
 import json
 
@@ -39,9 +38,7 @@ async def get_ids(request, _):
 @requires_bot_token()
 @ratelimit(limit=1, seconds=1, level=RequestBucket.TOKEN)
 async def ws_loaders(request, _, ws):
-    mpsc = aioredis.pubsub.Receiver(loop=request.app.loop)
-    await request.app.redis.psubscribe(mpsc.pattern("loaders:*"))
-    async for _, msg in mpsc.iter():
+    async for _, msg in request.app.subscriber.psubscribe("loaders:*"):
         event = msg[0].decode("utf-8")[len("loaders:"):]
         data = msgpack.unpackb(msg[1])
         await ws.send(json.dumps({
