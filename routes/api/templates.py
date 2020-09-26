@@ -22,14 +22,14 @@ async def set_settings(request, template_id):
 @bp.post("/<template_id>/bots")
 @requires_bot_token()
 @ratelimit(limit=30, seconds=10, level=RequestBucket.TOKEN)
-@requires_body("user")
+@requires_body()
 async def set_settings(request, bot_id, template_id):
-    user_id = request.json["user"]
     template = await request.app.mongo.dtpl.templates.find_one({"_id": template_id}, projection=("creator_id",))
     if template is None:
         return response.json({"error": "Unknown template"}, status=404)
 
-    if template["creator_id"] != user_id:
+    user_id = request.json.get("user")
+    if user_id is not None and template["creator_id"] != user_id:
         return response.json({"error": "User is not the creator"}, status=403)
 
     await request.app.mongo.dtpl.templates.update_one({"_id": template_id}, {"$addToSet": {"bots": bot_id}})
@@ -39,14 +39,14 @@ async def set_settings(request, bot_id, template_id):
 @bp.delete("/<template_id>/bots")
 @requires_bot_token()
 @ratelimit(limit=30, seconds=10, level=RequestBucket.TOKEN)
-@requires_body("user")
+@requires_body()
 async def delete_settings(request, bot_id, template_id):
-    user_id = request.json["user"]
     template = await request.app.mongo.dtpl.templates.find_one({"_id": template_id}, projection=("creator_id",))
     if template is None:
         return response.json({"error": "Unknown template"}, status=404)
 
-    if template["creator_id"] != user_id:
+    user_id = request.json.get("user")
+    if user_id is not None and template["creator_id"] != user_id:
         return response.json({"error": "User is not the creator"}, status=403)
 
     await request.app.mongo.dtpl.templates.update_one({"_id": template_id}, {"$pull": {"bots": bot_id}})
