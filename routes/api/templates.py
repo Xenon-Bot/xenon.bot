@@ -11,7 +11,7 @@ bp = Blueprint(name="api.templates", url_prefix="/templates")
 @bp.get("/<template_id>/bots")
 @ratelimit(limit=30, seconds=10, level=RequestBucket.TOKEN)
 @cache_response(minutes=1)
-async def set_settings(request, _, template_id):
+async def set_settings(request, template_id):
     template = await request.app.mongo.dtpl.templates.find_one({"_id": template_id}, projection=("bots",))
     if template is None:
         return response.json({"error": "Unknown template"}, status=404)
