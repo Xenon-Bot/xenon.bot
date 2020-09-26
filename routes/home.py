@@ -261,8 +261,11 @@ async def terms_page(request):
     return {}
 
 
-@bp.route("/ads.txt")
-async def ads_txt(request):
+@bp.route("/robots.txt")
+async def robots_txt(request):
     return response.text(
-        "google.com, pub-6803521419893828, DIRECT, f08c47fec0942fa0"
+        "User-agent: *\n"
+        "Disallow: /api/\n"
+        "Disallow: /legal/\n"
+        "Allow: /"
     )
