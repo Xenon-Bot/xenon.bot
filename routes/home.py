@@ -81,7 +81,7 @@ QUESTIONS = [
         "question": "My backup is missing but I didn't delete it?!",
         "answer": "Backups that were created before 11/04/19 can no longer be accessed. "
                   "There was a long migration period.<br/>"
-                  "Please also keep in mind that a backup can only be loaded with the discord account that create it."
+                  "Please also keep in mind that a backup can only be loaded with the discord account that created it."
     },
     {
         "question": "Where can I find a list of my backups?",
@@ -89,11 +89,12 @@ QUESTIONS = [
     },
     {
         "question": "How can I create and load a template?",
-        "answer": "WIP"
+        "answer": "You can find templates at <a href=\"https://templates.xenon.bot\" class=\"text-secondary\">templates.xenon.bot</a>, simply click on the template you want to use, then click the Use button.<br/>"
+                  "If you want to create a template, you can find detailed instructions <a href=\"https://wiki.xenon.bot/templates#creating-a-template\" class=\"text-secondary\">here</a>."
     },
     {
         "question": "What is the best template for me?",
-        "answer": "WIP"
+        "answer": "You can search on the <a href=\"https://templates.xenon.bot\" class=\"text-secondary\">templates</a> site to find what you are looking for!"
     }
 ]
 
