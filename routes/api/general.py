@@ -37,7 +37,7 @@ async def shards_route(request):
 @ratelimit(limit=5, seconds=5)
 @cache_response(minutes=10)
 async def stats_route(request):
-    guild_count = await request.app.redis.hlen("guilds")
+    guild_count_raw = await request.app.redis.hget("state", "guild_count")
     role_count = await request.app.redis.hlen("roles")
     channel_count = await request.app.redis.hlen("channels")
     shard_count_raw = await request.app.redis.hget("state", "shard_count")
@@ -45,6 +45,10 @@ async def stats_route(request):
     shard_count = None
     if shard_count_raw is not None:
         shard_count = msgpack.unpackb(shard_count_raw)
+
+    guild_count = None
+    if guild_count_raw is not None:
+        guild_count = msgpack.unpackb(shard_count_raw)
 
     backup_count = await request.app.db.backups.estimated_document_count()
     template_count = await request.app.mongo.dtpl.templates.estimated_document_count()
