@@ -38,8 +38,6 @@ async def shards_route(request):
 @cache_response(minutes=10)
 async def stats_route(request):
     guild_count_raw = await request.app.redis.hget("state", "guild_count")
-    role_count = await request.app.redis.hlen("roles")
-    channel_count = await request.app.redis.hlen("channels")
     shard_count_raw = await request.app.redis.hget("state", "shard_count")
 
     shard_count = None
@@ -55,8 +53,6 @@ async def stats_route(request):
 
     return response.json({
         "guild_count": guild_count,
-        "role_count": role_count,
-        "channel_count": channel_count,
         "shard_count": shard_count,
         "backup_count": backup_count,
         "template_count": template_count
