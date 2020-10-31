@@ -11,7 +11,7 @@ bp = Blueprint(name="api.general")
 
 @bp.get("/shards")
 @ratelimit(limit=5, seconds=5)
-@cache_response(minutes=1)
+@cache_response(seconds=30)
 async def shards_route(request):
     shard_count_raw = await request.app.redis.hget("state", "shard_count")
 
@@ -35,7 +35,7 @@ async def shards_route(request):
 
 @bp.get("/stats")
 @ratelimit(limit=5, seconds=5)
-@cache_response(minutes=10)
+@cache_response(minutes=1)
 async def stats_route(request):
     guild_count_raw = await request.app.redis.hget("state", "guild_count")
     shard_count_raw = await request.app.redis.hget("state", "shard_count")
@@ -46,7 +46,7 @@ async def stats_route(request):
 
     guild_count = None
     if guild_count_raw is not None:
-        guild_count = msgpack.unpackb(shard_count_raw)
+        guild_count = int(guild_count_raw.decode("utf-8"))
 
     backup_count = await request.app.db.backups.estimated_document_count()
     template_count = await request.app.mongo.dtpl.templates.estimated_document_count()
