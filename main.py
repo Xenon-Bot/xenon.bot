@@ -79,7 +79,7 @@ class App(Sanic):
         self.register_listener(self.teardown, "after_server_stop")
 
     async def setup(self, _, loop):
-        self.mongo = AsyncIOMotorClient()
+        self.mongo = AsyncIOMotorClient(getattr(self.config, "MONGO_URL", "mongodb://127.0.0.1"))
         self.db = self.mongo.xenon
         await self.db.new_templates.create_index([("_id", pymongo.TEXT), ("description", pymongo.TEXT)])
 
