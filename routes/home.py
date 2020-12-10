@@ -270,3 +270,8 @@ async def robots_txt(request):
         "Disallow: /legal/\n"
         "Allow: /"
     )
+
+
+@bp.get("/ads.txt")
+async def ads_txt(request):
+    return response.redirect("https://api.nitropay.com/v1/ads-593.txt", status=301)

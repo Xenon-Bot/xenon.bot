@@ -69,6 +69,61 @@
                     </div>
                 {% endfor %}
             </div>
+
+            <div id="nphome0"></div>
+
+            <script type="text/javascript">
+                window['nitroAds'].createAd('nphome0', {
+                    "refreshLimit": 10,
+                    "refreshTime": 90,
+                    "renderVisibleOnly": false,
+                    "refreshVisibleOnly": true,
+                    "sizes": [
+                        [
+                            "970",
+                            "250"
+                        ]
+                    ],
+                    "report": {
+                        "enabled": true,
+                        "wording": "Report Ad",
+                        "position": "bottom-right"
+                    }
+                });
+            </script>
+
+            <script type="text/javascript">
+                window['nitroAds'].createAd('nphome1', {
+                    "refreshLimit": 10,
+                    "refreshTime": 90,
+                    "format": "rail",
+                    "rail": "left",
+                    "railOffsetTop": 0,
+                    "railOffsetBottom": 0,
+                    "railCollisionWhitelist": [],
+                    "sizes": [
+                        [
+                            "300",
+                            "250"
+                        ],
+                        [
+                            "160",
+                            "600"
+                        ],
+                        [
+                            "300",
+                            "600"
+                        ]
+                    ],
+                    "report": {
+                        "enabled": true,
+                        "wording": "Report Ad",
+                        "position": "bottom-right"
+                    },
+                    "mediaQuery": "(min-width: 1025px)"
+                });
+            </script>
+
             <div class="row pt-5">
                 <div class="col-4 stat pl-md-5 pt-5">
                     <i class="material-icons stat-icon text-secondary mb-3">trending_up</i>
@@ -120,7 +175,7 @@
             </a>
         </div>
     </section>
-    <section id="tiers" class="bg-light-2">
+    <section id="tiers" class="bg-light-2 pb-4">
         <div class="container text-dark">
             <h3 class="display-4 pb-5 text-center">Xenon Tiers</h3>
             <div class="row pt-3">
@@ -154,11 +209,41 @@
                     </div>
                 {% endfor %}
             </div>
-            <div class="text-center mt-5">
+            <div class="text-center my-5">
                 <p class="font-italic">Not sure which tier fits your needs? Look at our Docs!</p>
                 <a class="btn btn-outline-primary my-4 my-sm-0" href="/docs/premium" target="_blank">
                     Docs
                 </a>
+            </div>
+            <div class="row justify-content-center mt-5 pt-5">
+                <div class="col-sm-12 col-md-10 col-lg-8">
+                    <div class="card bg-light">
+                        <div class="card-body py-5">
+                            <h3 class="card-title ml-3">
+                                Mass Transfer
+                            </h3>
+                            <div class="divider bg-light-2"></div>
+                            <p class="mx-3">
+                                <b>You need to transfer a lot of data from one discord server to another?<br>
+                                    We've got you covered!</b>
+                                <br><br>
+                                If the monthly tiers don't offer the required functionality for you, we can work out
+                                a custom, one-time price for you. We can transfer your data directly from one
+                                discord server to another or store it for you. The data may include roles, channels,
+                                messages, emojis, roles-assignments and nicknames.
+                                <br>
+                            </p>
+                            <p class="text-muted mx-3">
+                                The price is highly dependent on your needs, so feel free to hit us up via email.
+                            </p>
+                            <div class="divider bg-light-2"></div>
+                            <a class="btn btn-outline-success mr-3 mt-1 float-right" href="mailto:contact@xenon.bot"
+                               target="_blank">
+                                Contact Us
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>

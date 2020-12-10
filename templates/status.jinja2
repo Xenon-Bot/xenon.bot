@@ -14,7 +14,75 @@
             <span class="font-italic">Refreshing in <span id="status-countdown"></span> seconds.</span>
         </div>
         <div class="shards text-dark font-weight-bold pb-5" id="shards"></div>
+
+        <div id="npstatus0"></div>
+        <script type="text/javascript">
+            window['nitroAds'].createAd('npstatus0', {
+                "refreshLimit": 10,
+                "refreshTime": 90,
+                "renderVisibleOnly": false,
+                "refreshVisibleOnly": true,
+                "sizes": [
+                    [
+                        "970",
+                        "250"
+                    ],
+                    [
+                        "970",
+                        "90"
+                    ],
+                    [
+                        "728",
+                        "90"
+                    ]
+                ],
+                "report": {
+                    "enabled": true,
+                    "wording": "Report Ad",
+                    "position": "bottom-right"
+                },
+            });
+        </script>
+
+        <div class="d-none d-md-block mt-5">
+            <!-- <h2 class="display-4">Endpoints</h2>
+            <canvas id="requestsChart" style="height: 200px" class="mb-5 mt-3"></canvas> -->
+            <h2 class="display-4">Response Status</h2>
+            <canvas id="responsesChart" style="height: 200px" class="mb-5 mt-3"></canvas>
+        </div>
     </div>
+
+    <script type="text/javascript">
+        window['nitroAds'].createAd('npstatus1', {
+            "refreshLimit": 10,
+            "refreshTime": 90,
+            "format": "rail",
+            "rail": "left",
+            "railOffsetTop": 0,
+            "railOffsetBottom": 0,
+            "railCollisionWhitelist": [],
+            "sizes": [
+                [
+                    "300",
+                    "250"
+                ],
+                [
+                    "160",
+                    "600"
+                ],
+                [
+                    "300",
+                    "600"
+                ]
+            ],
+            "report": {
+                "enabled": true,
+                "wording": "Report Ad",
+                "position": "bottom-right"
+            },
+            "mediaQuery": "(min-width: 1025px)"
+        });
+    </script>
 {% endblock %}
 
 {% block js %}
