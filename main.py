@@ -84,7 +84,7 @@ class App(Sanic):
         await self.db.new_templates.create_index([("_id", pymongo.TEXT), ("description", pymongo.TEXT)])
 
         self.session = aiohttp.ClientSession(loop=loop)
-        self.redis = await aioredis.create_redis_pool("redis://localhost", loop=loop)
+        self.redis = await aioredis.create_redis_pool(getattr(self.config, "REDIS_URL", "redis://localhost"), loop=loop)
         self.subscriber = RedisSubscriber(self.redis, loop=loop)
 
     async def teardown(self, _, loop):
@@ -98,4 +98,4 @@ app = App(name="xenon.bot", load_env="APP_", strict_slashes=False)
 app.config.PROXIES_COUNT = 2
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, access_log=True, debug=True, auto_reload=False)
+    app.run(host="127.0.0.1", port=8000, access_log=True, debug=True, auto_reload=False)

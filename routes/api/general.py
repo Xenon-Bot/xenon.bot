@@ -1,7 +1,6 @@
 from sanic import Blueprint, response
 import msgpack
 import json
-from os import environ as env
 
 from stay_fast import *
 from auth import *
@@ -47,7 +46,7 @@ async def fetch_guild_count(app):
 
 @bp.get("/stats")
 @ratelimit(limit=5, seconds=5)
-@cache_response(minutes=10)
+@cache_response(hours=12)
 async def stats_route(request):
     guild_count = await fetch_guild_count(request.app)
     shard_count_raw = await request.app.redis.hget("state", "shard_count")
