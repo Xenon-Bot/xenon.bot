@@ -1,0 +1,48 @@
+{% extends "base.jinja2" %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/invited.css">
+{% endblock %}
+
+{% block title %}Xenon Bot - Login{% endblock %}
+
+{% block main %}
+    <div class="container-fluid my-5">
+        <div class="card bg-darker">
+            <div class="card-body py-5">
+                <div class="text-center">
+                    <h3 class="mb-5" id="statusText">Logging you in ...</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}{% endblock %}
+{% block js %}
+    <script>
+        $(() => {
+            const params = new URLSearchParams(window.location.search)
+            const state = params.state
+            let redirectTo = '/'
+            if (state) {
+                redirectTo = decodeURIComponent(state)
+            }
+
+            const code = params.get('code')
+            fetch('/api/oauth/exchange', {method: 'POST', body: JSON.stringify({code: code})})
+                .then(resp => {
+                    if (!resp.ok) {
+                        $('#statusText').text('Failed to log you in ...')
+                        setTimeout(() => window.location.replace('/oauth/login'), 2000)
+                        return
+                    }
+
+                    resp.json().then(data => {
+                        $('#statusText').text('Successfully logged you in!')
+                        setTimeout(() => window.location.replace(redirectTo), 2000)
+                        localStorage.setItem('token', data.token)
+                    })
+                })
+        })
+    </script>
+{% endblock %}

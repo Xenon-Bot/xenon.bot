@@ -41,3 +41,25 @@ def requires_bot_token():
         return wrapper
 
     return predicate
+
+
+def requires_user_token():
+    def predicate(handler):
+        async def wrapper(request, *args, **kwargs):
+            jwt_token = request.headers.get("Authorization")
+            if jwt_token is None:
+                return response.json({"error": "Unauthorized"}, status=401)
+
+            try:
+                data = decode_jwt(request.app, jwt_token)
+            except jwt.DecodeError:
+                return response.json({"error": "Invalid token"}, status=401)
+
+            if data["t"] != TokenType.USER:
+                return response.json({"error": "This endpoint requires a user token"}, status=401)
+
+            return await handler(request, data["id"], *args, **kwargs)
+
+        return wrapper
+
+    return predicate

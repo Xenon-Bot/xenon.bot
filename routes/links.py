@@ -2,8 +2,8 @@ from sanic import Blueprint, response
 
 bp = Blueprint("links")
 
-INVITE_LINK = "https://discord.com/api/oauth2/authorize?client_id=416358583220043796" \
-              "&permissions=8&scope=applications.commands%20bot"
+INVITE_LINK = "https://discord.com/api/oauth2/authorize?client_id=416358583220043796&permissions=8&response_type=code" \
+              "&redirect_uri=https%3A%2F%2Fxenon.bot%2Foauth%2Finvited&scope=bot%20applications.commands"
 DISCORD_LINK = "https://discord.gg/5GmAsPs"
 DOCS_LINK = "https://wiki.xenon.bot"
 PATREON_LINK = "https://www.patreon.com/merlinfuchs"

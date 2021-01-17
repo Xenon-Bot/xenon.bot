@@ -1,0 +1,91 @@
+{% extends "base.jinja2" %}
+
+{% block css %}
+    <link rel="stylesheet" href="/static/invited.css">
+{% endblock %}
+
+{% block title %}Xenon Bot - Invited{% endblock %}
+
+{% block main %}
+    <div class="container-fluid my-5">
+        <div class="card bg-darker">
+            <div class="card-body py-5">
+                <div class="text-center">
+                    {% if invited %}
+                        <h3 class="mb-5">Thanks for inviting Xenon!</h3>
+                    {% else %}
+                        <h3 class="mb-5">Something went wrong ...</h3>
+                    {% endif %}
+                    <div class="invite-visual">
+                        <img src="/static/img/xenon.jpg" alt="bot logo" class="bot-logo">
+                        <div class="dots">
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                            <span class="dot"></span>
+                        </div>
+                        {% if guild and guild.icon %}
+                            <img src="https://cdn.discordapp.com/icons/{{ guild.id }}/{{ guild.icon }}.webp"
+                                 alt="guild icon" class="guild-logo">
+                        {% else %}
+                            <img src="https://cdn.discordapp.com/embed/avatars/0.png" alt="guild icon"
+                                 class="guild-logo">
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="mt-5 mb-5 px-3 warnings">
+                    {% if invited %}
+                        <div class="mt-2">
+                            <i class="material-icons text-success align-middle">check_circle</i>
+                            <span>
+                            Xenon has been added to your server.
+                        </span>
+                        </div>
+                    {% else %}
+                        <div class="mt-2">
+                            <i class="material-icons text-danger align-middle">error</i>
+                            <span>
+                                Xenon was not added to your server.
+                            </span>
+                            <a href="/invite" class="text-danger">Try again</a>
+                        </div>
+                    {% endif %}
+                    {% if slash_commands %}
+                        <div class="mt-2">
+                            <i class="material-icons text-success align-middle">check_circle</i>
+                            <span>
+                                Slash commands have been registered.
+                            </span>
+                        </div>
+                    {% else %}
+                        <div class="mt-2">
+                            <i class="material-icons text-danger align-middle">error</i>
+                            <span>
+                                You did not grant permissions to create slash commands.
+                            </span>
+                            <a href="/invite" class="text-danger">Try again</a>
+                        </div>
+                    {% endif %}
+                    {% if not admin %}
+                        <div class="mt-2">
+                            <i class="material-icons text-warning align-middle">warning</i>
+                            <span>
+                                You did not grant administrator permissions to the bot.
+                            </span>
+                            <a href="/invite" class="text-warning">Try again</a></span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="divider"></div>
+                <div class="mt-5 text-center">
+                    <a class="btn btn-outline-light mr-2" href="/docs">
+                        Quick Start
+                    </a>
+                    <a class="btn btn-outline-light" style="opacity: 0.8" href="/discord">
+                        Support
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}{% endblock %}

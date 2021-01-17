@@ -1,0 +1,46 @@
+@import "main";
+
+.bot-logo {
+  border-radius: 50%;
+  height: 100px;
+}
+
+.guild-logo {
+  border-radius: 50%;
+  height: 100px;
+}
+
+.dots {
+  display: inline-block;
+  margin: 0 30px;
+}
+
+.dot {
+  height: 5px;
+  width: 5px;
+  display: inline-block;
+  background-color: white;
+  margin: 0 6px;
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+.warnings span {
+  color: white;
+  opacity: 0.7;
+}
+
+.card {
+  padding: 0;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.container-fluid {
+  padding: 0;
+}
+
+.divider {
+  border-bottom: 2px solid black;
+  opacity: 0.2;
+}
